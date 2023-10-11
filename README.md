@@ -21,7 +21,7 @@ Here is an example snippet of what a LogiCode program would look like:
   LET foo <- x AND y;
   LET bar <- NOT z;
   LET baz <- foo OR bar;
-  read baz;
+  READ baz;
 !End;
 
 !EndProgram;
@@ -102,9 +102,9 @@ graph TD;
 
 ## Todo
 
--   [ ] Lex Write keyword (i.e. `WRITE`)
--   [ ] Lex Read keyword (i.e. `READ`)
 -   [ ] Lex Comments (i.e `--`) (Filter out)
+-   [x] Lex Write keyword (i.e. `WRITE`)
+-   [x] Lex Read keyword (i.e. `READ`)
 -   [x] Lex Let keyword (i.e. `LET`)
 -   [x] Lex Identifier (i.e. `IDENT`)
 -   [x] Lex Signal (i.e. `LETNAL`)

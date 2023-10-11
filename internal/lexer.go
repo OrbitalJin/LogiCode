@@ -10,7 +10,6 @@ import (
 )
 
 
-
 type Lexer struct {
 	src string
 }
@@ -25,43 +24,50 @@ func (l *Lexer) Lex() []types.Token {
 	var tokens []types.Token
 	var src []string = l.preProcessSource()
 
-	for i, word := range src {
-		word = strings.Trim(word, "\n ")
-		if !l.isSkippable(word){
-			line := strings.Split(word, " ")
+	// Iterating over lines
+	for i, line := range src {
+		line = strings.Trim(line, "\n ")
+		if !l.isSkippable(line){
+			line := strings.Split(line, " ")
+			// Iterating over words
 			for j, word := range line {
 				word = strings.Trim(word, "\n ")
-				if word[0] == '!' {
-					tokens = append(tokens, l.lexBlockDeclaration(word, i))
-					continue
-				}
 				// Keywords
 				switch word {
-					case "LET" : tokens = append(tokens, types.Token{Type: types.TK_LET})
-					case "<-"  : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN})
-					case "AND" : tokens = append(tokens, types.Token{Type: types.TK_AND})
-					case "OR"  : tokens = append(tokens, types.Token{Type: types.TK_OR})
-					case "XOR" : tokens = append(tokens, types.Token{Type: types.TK_XOR})
-					case "NOT" : tokens = append(tokens, types.Token{Type: types.TK_NOT})
-					case "NAND": tokens = append(tokens, types.Token{Type: types.TK_NAND})
-					case "NOR" : tokens = append(tokens, types.Token{Type: types.TK_NOR})
+					case "WRITE": tokens = append(tokens, types.Token{Type: types.TK_WRITE})
+					case "READ" : tokens = append(tokens, types.Token{Type: types.TK_READ})
+					case "LET"  : tokens = append(tokens, types.Token{Type: types.TK_LET})
+					case "<-"   : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN})
+					case "AND"  : tokens = append(tokens, types.Token{Type: types.TK_AND})
+					case "OR"   : tokens = append(tokens, types.Token{Type: types.TK_OR})
+					case "XOR"  : tokens = append(tokens, types.Token{Type: types.TK_XOR})
+					case "NOT"  : tokens = append(tokens, types.Token{Type: types.TK_NOT})
+					case "NAND" : tokens = append(tokens, types.Token{Type: types.TK_NAND})
+					case "NOR"  : tokens = append(tokens, types.Token{Type: types.TK_NOR})
 					case "XNOR" : tokens = append(tokens, types.Token{Type: types.TK_XNOR})
 					default:
+						// Signals
 						if l.isDigit(word) {
 							tokens = append(tokens, types.Token{Type: types.TK_SIGNAL})
+
 						} else if l.isAlpha(word) {
-							fmt.Println(word, " identifier")
-							tokens = append(tokens, types.Token{Type: types.TK_IDENT})
+							// Block Delimiters
+							if word[0] == '!' {
+								tokens = append(tokens, l.lexBlockDeclaration(word, i))
+							// Identifiers
+							} else {
+								tokens = append(tokens, types.Token{Type: types.TK_IDENT})
+							}
+						// Invalid Token
 						} else {
 							l.syntaxError(word, i, j)
 						}
-
 				}
 	
 			}
 		}
 	}
-	// add EOF token
+	// Add EOF token
 	tokens = append(tokens, types.Token{Type: types.TK_EOF, Value: "EOF"})
 
 	return tokens

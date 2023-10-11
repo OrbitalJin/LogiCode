@@ -8,6 +8,6 @@
   LET foo <- x AND y;
   LET bar <- NOT z;
   LET baz <- foo OR bar;
-  read baz;
+  READ baz;
 !End;
 !EndProgram;
