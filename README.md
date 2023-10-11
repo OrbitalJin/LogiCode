@@ -9,29 +9,29 @@ Here is an example snippet of what a LogiCode program would look like:
 `foo.lc`
 
 ```
-!Program
+!Program;
 
-!Declare
+!Declare;
   let SIG x <- 001;
   let SIG y <- 010;
   let SIG z <- 011;
-!EndDeclare
+!EndDeclare;
 
-!Begin
-  -- This is a comment
+!Begin;
   let SIG foo <- x AND y;
   let SIG bar <- NOT z;
   let SIG baz <- foo OR bar;
-  -- This is should output `100` to stdout
   read baz;
-!End
+!End;
 
-!EndProgram
+!EndProgram;
 ```
+
+This program will output `100` to stdout.
 
 ## Architecture
 
-The `Lexer` produces an array of `Tokens` from the source code, which are then passed to the `Parser`. The `Parser` produces an Abstract Syntax Tree (`AST`) which is then passed to the Interpreter. The Interpreter then evaluates the `AST` using evalutation rules and produces an output. Here is a simple diagram that illustrates the architecture:
+The [`Lexer`](https://en.wikipedia.org/wiki/Lexical_analysis) produces an array of [`Tokens`](https://bits.netbeans.org/11.1/javadoc/org-netbeans-modules-lexer/index.html?org/netbeans/api/lexer/Token.html) from the source code, which are then passed to the [`Parser`](https://en.wikipedia.org/wiki/Parsing). The `Parser` produces an Abstract Syntax Tree ([`AST`](https://en.wikipedia.org/wiki/Abstract_syntax_tree)) which is then passed to the Interpreter. The Interpreter then evaluates the `AST` using evalutation rules and produces an output. Here is a simple diagram that illustrates the architecture:
 
 ```mermaid
 graph LR;
@@ -99,3 +99,21 @@ graph TD;
 ```
 
 > **Warning** The `AST` is not a binary tree. It is a tree data structure that can have any number of children.
+
+## Todo
+
+-   [ ] Lex Write keyword (i.e. `WRITE`)
+-   [ ] Lex Read keyword (i.e. `READ`)
+-   [ ] Lex Assignment operator (i.e. `ASSIGN`)
+-   [ ] Lex Let keyword (i.e. `LET`)
+-   [ ] Lex Identifier (i.e. `IDENT`)
+-   [ ] Lex Boolean and keyword (i.e. `AND`)
+-   [ ] Lex Boolean or keyword (i.e. `OR`)
+-   [ ] Lex Boolean xor keyword (i.e. `XOR`)
+-   [ ] Lex Boolean not keyword (i.e. `NOT`)
+-   [ ] Lex Boolean nand keyword (i.e. `NAND`)
+-   [ ] Lex Boolean nor keyword (i.e. `NOR`)
+-   [ ] Lex Boolean xnor keyword (i.e. `XNOR`)
+-   [x] Lex Entry Point delimiters (i.e. `BEGIN` and `END`)
+-   [x] Lex Declare delimiters (i.e. `DECLARESTART` and `DECLAREEND`)
+-   [x] Lex Program delimiters (i.e. `PROGRAMSTART` and `PROGRAMEND`)

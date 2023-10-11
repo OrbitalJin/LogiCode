@@ -20,6 +20,8 @@ const (
 	TK_DECLAREEND
 	TK_PROGRAMSTART
 	TK_PROGRAMEEND
+	TK_BEGIN
+	TK_END
 )
 
 type TokenType int

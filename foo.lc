@@ -1,0 +1,13 @@
+!Program;
+!Declare;
+  let SIG x <- 001;
+  let SIG y <- 010;
+  let SIG z <- 011;
+!EndDeclare;
+!Begin;
+  let SIG foo <- x AND y;
+  let SIG bar <- NOT z;
+  let SIG baz <- foo OR bar;
+  read baz;
+!End;
+!EndProgram;
