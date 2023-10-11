@@ -64,6 +64,24 @@ Here are some of the soon-to-be Lexable tokens:
 
 > **Note** These are reserved keywords that cannot be used as identifiers.
 
+-   [x] Lex Write keyword (i.e. `WRITE`)
+-   [x] Lex Read keyword (i.e. `READ`)
+-   [x] Lex Let keyword (i.e. `LET`)
+-   [x] Lex Identifier (i.e. `IDENT`)
+-   [x] Lex Signal (i.e. `LETNAL`)
+-   [x] Lex Assignment operator (i.e. `ASLETN`)
+-   [x] Lex Boolean and keyword (i.e. `AND`)
+-   [x] Lex Boolean or keyword (i.e. `OR`)
+-   [x] Lex Boolean xor keyword (i.e. `XOR`)
+-   [x] Lex Boolean not keyword (i.e. `NOT`)
+-   [x] Lex Boolean nand keyword (i.e. `NAND`)
+-   [x] Lex Boolean nor keyword (i.e. `NOR`)
+-   [x] Lex Boolean xnor keyword (i.e. `XNOR`)
+-   [x] Lex Entry Point delimiters (i.e. `BEGIN` and `END`)
+-   [x] Lex Declare delimiters (i.e. `DECLARESTART` and `DECLAREEND`)
+-   [x] Lex Program delimiters (i.e. `PROGRAMSTART` and `PROGRAMEND`)
+-   [ ] Lex Comments (i.e `--`) (Filter out)
+
 ## Parser
 
 The `Parser` is a recursive descent parser that produces an `AST` from the `Tokens` that are produced by the `Lexer`.
@@ -101,21 +119,3 @@ graph TD;
 > **Warning** The `AST` is not a binary tree. It is a tree data structure that can have any number of children.
 
 ## Todo
-
--   [ ] Lex Comments (i.e `--`) (Filter out)
--   [x] Lex Write keyword (i.e. `WRITE`)
--   [x] Lex Read keyword (i.e. `READ`)
--   [x] Lex Let keyword (i.e. `LET`)
--   [x] Lex Identifier (i.e. `IDENT`)
--   [x] Lex Signal (i.e. `LETNAL`)
--   [x] Lex Assignment operator (i.e. `ASLETN`)
--   [x] Lex Boolean and keyword (i.e. `AND`)
--   [x] Lex Boolean or keyword (i.e. `OR`)
--   [x] Lex Boolean xor keyword (i.e. `XOR`)
--   [x] Lex Boolean not keyword (i.e. `NOT`)
--   [x] Lex Boolean nand keyword (i.e. `NAND`)
--   [x] Lex Boolean nor keyword (i.e. `NOR`)
--   [x] Lex Boolean xnor keyword (i.e. `XNOR`)
--   [x] Lex Entry Point delimiters (i.e. `BEGIN` and `END`)
--   [x] Lex Declare delimiters (i.e. `DECLARESTART` and `DECLAREEND`)
--   [x] Lex Program delimiters (i.e. `PROGRAMSTART` and `PROGRAMEND`)

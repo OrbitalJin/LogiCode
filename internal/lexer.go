@@ -26,29 +26,28 @@ func (l *Lexer) Lex() []types.Token {
 
 	// Iterating over lines
 	for i, line := range src {
-		line = strings.Trim(line, "\n ")
-		if !l.isSkippable(line){
+		if !l.isSkippable(line) {
 			line := strings.Split(line, " ")
 			// Iterating over words
 			for j, word := range line {
 				word = strings.Trim(word, "\n ")
 				// Keywords
 				switch word {
-					case "WRITE": tokens = append(tokens, types.Token{Type: types.TK_WRITE})
-					case "READ" : tokens = append(tokens, types.Token{Type: types.TK_READ})
-					case "LET"  : tokens = append(tokens, types.Token{Type: types.TK_LET})
-					case "<-"   : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN})
-					case "AND"  : tokens = append(tokens, types.Token{Type: types.TK_AND})
-					case "OR"   : tokens = append(tokens, types.Token{Type: types.TK_OR})
-					case "XOR"  : tokens = append(tokens, types.Token{Type: types.TK_XOR})
-					case "NOT"  : tokens = append(tokens, types.Token{Type: types.TK_NOT})
-					case "NAND" : tokens = append(tokens, types.Token{Type: types.TK_NAND})
-					case "NOR"  : tokens = append(tokens, types.Token{Type: types.TK_NOR})
-					case "XNOR" : tokens = append(tokens, types.Token{Type: types.TK_XNOR})
+					case "WRITE": tokens = append(tokens, types.Token{Type: types.TK_WRITE, Symbol: word})
+					case "READ" : tokens = append(tokens, types.Token{Type: types.TK_READ, Symbol: word})
+					case "LET"  : tokens = append(tokens, types.Token{Type: types.TK_LET, Symbol: word})
+					case "<-"   : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN, Symbol: word})
+					case "AND"  : tokens = append(tokens, types.Token{Type: types.TK_AND, Symbol: word})
+					case "OR"   : tokens = append(tokens, types.Token{Type: types.TK_OR, Symbol: word})
+					case "XOR"  : tokens = append(tokens, types.Token{Type: types.TK_XOR, Symbol: word})
+					case "NOT"  : tokens = append(tokens, types.Token{Type: types.TK_NOT, Symbol: word})
+					case "NAND" : tokens = append(tokens, types.Token{Type: types.TK_NAND, Symbol: word})
+					case "NOR"  : tokens = append(tokens, types.Token{Type: types.TK_NOR, Symbol: word})
+					case "XNOR" : tokens = append(tokens, types.Token{Type: types.TK_XNOR, Symbol: word})
 					default:
 						// Signals
 						if l.isDigit(word) {
-							tokens = append(tokens, types.Token{Type: types.TK_SIGNAL})
+							tokens = append(tokens, types.Token{Type: types.TK_SIGNAL, Value: word})
 
 						} else if l.isAlpha(word) {
 							// Block Delimiters
@@ -56,7 +55,7 @@ func (l *Lexer) Lex() []types.Token {
 								tokens = append(tokens, l.lexBlockDeclaration(word, i))
 							// Identifiers
 							} else {
-								tokens = append(tokens, types.Token{Type: types.TK_IDENT})
+								tokens = append(tokens, types.Token{Type: types.TK_IDENT, Symbol: word})
 							}
 						// Invalid Token
 						} else {
@@ -74,9 +73,23 @@ func (l *Lexer) Lex() []types.Token {
 }
 
 func (l *Lexer) preProcessSource() []string {
-	src := strings.Split(l.src, ";")
-	if len(src) > 1 {src = src[:len(src) - 1]}
-	return src
+	// Split into lines
+	lines := strings.Split(l.src, "\n")
+
+	// Remove leading/trailing whitespace from each line
+	for i, line := range lines {
+			lines[i] = strings.TrimSpace(line)
+	}
+
+	// Remove empty lines
+	filtered := make([]string, 0, len(lines))
+	for _, line := range lines {
+			if line != "" {
+					filtered = append(filtered, line)
+			}
+	}
+
+	return filtered
 }
 
 func (l *Lexer) lexBlockDeclaration(s string, line int) types.Token {
@@ -84,12 +97,12 @@ func (l *Lexer) lexBlockDeclaration(s string, line int) types.Token {
 		l.syntaxError(s, line, 1);
 	}
 	switch s[1:] {
-		case "Program": return types.Token{Type: types.TK_PROGRAMSTART,}
-		case "EndProgram": return types.Token{Type: types.TK_PROGRAMEEND}
-		case "Declare": return types.Token{Type: types.TK_DECLARESTART,}
-		case "EndDeclare": return types.Token{Type: types.TK_DECLAREEND}
-		case "Begin": return types.Token{Type: types.TK_BEGIN,}
-		case "End": return types.Token{Type: types.TK_END}
+		case "Program": return types.Token{Type: types.TK_PROGRAMSTART, Symbol: s}
+		case "EndProgram": return types.Token{Type: types.TK_PROGRAMEEND, Symbol: s}
+		case "Declare": return types.Token{Type: types.TK_DECLARESTART, Symbol: s}
+		case "EndDeclare": return types.Token{Type: types.TK_DECLAREEND, Symbol: s}
+		case "Begin": return types.Token{Type: types.TK_BEGIN, Symbol: s}
+		case "End": return types.Token{Type: types.TK_END, Symbol: s}
 	default:
 		l.syntaxError(s, line, 1)
 		return types.Token{}
