@@ -12,15 +12,15 @@ Here is an example snippet of what a LogiCode program would look like:
 !Program;
 
 !Declare;
-  let SIG x <- 001;
-  let SIG y <- 010;
-  let SIG z <- 011;
+  LET x <- 001;
+  LET y <- 010;
+  LET z <- 011;
 !EndDeclare;
 
 !Begin;
-  let SIG foo <- x AND y;
-  let SIG bar <- NOT z;
-  let SIG baz <- foo OR bar;
+  LET foo <- x AND y;
+  LET bar <- NOT z;
+  LET baz <- foo OR bar;
   read baz;
 !End;
 
@@ -48,17 +48,17 @@ Here are some of the soon-to-be Lexable tokens:
 
 | Token Type | Description          | Token Type     | Description           |
 | ---------- | -------------------- | -------------- | --------------------- |
-| `ASSIGN`   | Assignment operator  | `LET`          | Let keyword           |
-| `IDENT`    | Identifier           | `EOF`          | End of file           |
-| `INT`      | Integer              | `DECLARESTART` | Declare start keyword |
-| `SIGN`     | Signal               | `DECLAREEND`   | Declare end keyword   |
-| `LPAREN`   | Left parenthesis?    | `PROGRAMSTART` | Program start keyword |
-| `RPAREN`   | Right parenthesis?   | `PROGRAMEND`   | Program end keyword   |
-| `AND`      | Boolean and keyword  | `BEGIN`        | Begin keyword         |
-| `OR`       | Boolean or keyword   | `END`          | End keyword           |
-| `XOR`      | Boolean xor keyword  | `SEMICOLON`    | Semicolon             |
-| `NOT`      | Boolean not keyword  | `WRITE`        | Write keyword         |
-| `NAND`     | Boolean nand keyword | `READ`         | Read keyword          |
+| `ASLETN`   | Assignment operator  | `EOF`          | End of file           |
+| `IDENT`    | Identifier           | `DECLARESTART` | Declare start keyword |
+| `INT`      | Integer              | `DECLAREEND`   | Declare end keyword   |
+| `LETN`     | Signal               | `PROGRAMSTART` | Program start keyword |
+| `LPAREN`   | Left parenthesis?    | `PROGRAMEND`   | Program end keyword   |
+| `RPAREN`   | Right parenthesis?   | `BEGIN`        | Begin keyword         |
+| `AND`      | Boolean and keyword  | `END`          | End keyword           |
+| `OR`       | Boolean or keyword   | `SEMICOLON`    | Semicolon             |
+| `XOR`      | Boolean xor keyword  | `WRITE`        | Write keyword         |
+| `NOT`      | Boolean not keyword  | `READ`         | Read keyword          |
+| `NAND`     | Boolean nand keyword | `LET`          | Let keyword           |
 | `NOR`      | Boolean nor keyword  |
 | `XNOR`     | Boolean xnor keyword |
 
@@ -102,12 +102,13 @@ graph TD;
 
 ## Todo
 
--   [ ] Remove `LET` keyword in favor of `SIG` operator
 -   [ ] Lex Write keyword (i.e. `WRITE`)
 -   [ ] Lex Read keyword (i.e. `READ`)
--   [ ] Lex Let keyword (i.e. `LET`)
--   [ ] Lex Identifier (i.e. `IDENT`)
--   [x] Lex Assignment operator (i.e. `ASSIGN`)
+-   [ ] Lex Comments (i.e `--`) (Filter out)
+-   [x] Lex Let keyword (i.e. `LET`)
+-   [x] Lex Identifier (i.e. `IDENT`)
+-   [x] Lex Signal (i.e. `LETNAL`)
+-   [x] Lex Assignment operator (i.e. `ASLETN`)
 -   [x] Lex Boolean and keyword (i.e. `AND`)
 -   [x] Lex Boolean or keyword (i.e. `OR`)
 -   [x] Lex Boolean xor keyword (i.e. `XOR`)

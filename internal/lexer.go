@@ -29,13 +29,15 @@ func (l *Lexer) Lex() []types.Token {
 		word = strings.Trim(word, "\n ")
 		if !l.isSkippable(word){
 			line := strings.Split(word, " ")
-			for _, word := range line {
+			for j, word := range line {
 				word = strings.Trim(word, "\n ")
 				if word[0] == '!' {
 					tokens = append(tokens, l.lexBlockDeclaration(word, i))
+					continue
 				}
+				// Keywords
 				switch word {
-					case "SIG" : tokens = append(tokens, types.Token{Type: types.TK_SIG})
+					case "LET" : tokens = append(tokens, types.Token{Type: types.TK_LET})
 					case "<-"  : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN})
 					case "AND" : tokens = append(tokens, types.Token{Type: types.TK_AND})
 					case "OR"  : tokens = append(tokens, types.Token{Type: types.TK_OR})
@@ -44,6 +46,16 @@ func (l *Lexer) Lex() []types.Token {
 					case "NAND": tokens = append(tokens, types.Token{Type: types.TK_NAND})
 					case "NOR" : tokens = append(tokens, types.Token{Type: types.TK_NOR})
 					case "XNOR" : tokens = append(tokens, types.Token{Type: types.TK_XNOR})
+					default:
+						if l.isDigit(word) {
+							tokens = append(tokens, types.Token{Type: types.TK_SIGNAL})
+						} else if l.isAlpha(word) {
+							fmt.Println(word, " identifier")
+							tokens = append(tokens, types.Token{Type: types.TK_IDENT})
+						} else {
+							l.syntaxError(word, i, j)
+						}
+
 				}
 	
 			}

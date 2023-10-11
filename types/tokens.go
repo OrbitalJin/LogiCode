@@ -1,10 +1,9 @@
 package types
 
 const (
-	TK_ASSIGN TokenType = iota
+	TK_ASSIGN TokenType = iota + 1
 	TK_IDENT
-	TK_INT
-	TK_SIG
+	TK_SIGNAL
 	TK_LPAREN
 	TK_RPAREN
 	TK_AND

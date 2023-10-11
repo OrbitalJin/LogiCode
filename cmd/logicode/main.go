@@ -22,5 +22,5 @@ func main(){
   source := readSource("foo.lc");
   l := internal.NewLexer(source);
   lexed := l.Lex();
-  fmt.Println(lexed);
+  fmt.Println(lexed, len(lexed));
 }
