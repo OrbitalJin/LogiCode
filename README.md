@@ -102,18 +102,19 @@ graph TD;
 
 ## Todo
 
+-   [ ] Remove `LET` keyword in favor of `SIG` operator
 -   [ ] Lex Write keyword (i.e. `WRITE`)
 -   [ ] Lex Read keyword (i.e. `READ`)
--   [ ] Lex Assignment operator (i.e. `ASSIGN`)
 -   [ ] Lex Let keyword (i.e. `LET`)
 -   [ ] Lex Identifier (i.e. `IDENT`)
--   [ ] Lex Boolean and keyword (i.e. `AND`)
--   [ ] Lex Boolean or keyword (i.e. `OR`)
--   [ ] Lex Boolean xor keyword (i.e. `XOR`)
--   [ ] Lex Boolean not keyword (i.e. `NOT`)
--   [ ] Lex Boolean nand keyword (i.e. `NAND`)
--   [ ] Lex Boolean nor keyword (i.e. `NOR`)
--   [ ] Lex Boolean xnor keyword (i.e. `XNOR`)
+-   [x] Lex Assignment operator (i.e. `ASSIGN`)
+-   [x] Lex Boolean and keyword (i.e. `AND`)
+-   [x] Lex Boolean or keyword (i.e. `OR`)
+-   [x] Lex Boolean xor keyword (i.e. `XOR`)
+-   [x] Lex Boolean not keyword (i.e. `NOT`)
+-   [x] Lex Boolean nand keyword (i.e. `NAND`)
+-   [x] Lex Boolean nor keyword (i.e. `NOR`)
+-   [x] Lex Boolean xnor keyword (i.e. `XNOR`)
 -   [x] Lex Entry Point delimiters (i.e. `BEGIN` and `END`)
 -   [x] Lex Declare delimiters (i.e. `DECLARESTART` and `DECLAREEND`)
 -   [x] Lex Program delimiters (i.e. `PROGRAMSTART` and `PROGRAMEND`)

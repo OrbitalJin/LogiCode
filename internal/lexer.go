@@ -25,11 +25,27 @@ func (l *Lexer) Lex() []types.Token {
 	var tokens []types.Token
 	var src []string = l.preProcessSource()
 
-	for line, word := range src {
+	for i, word := range src {
 		word = strings.Trim(word, "\n ")
 		if !l.isSkippable(word){
-			switch word[0] {
-				case '!': tokens = append(tokens, l.lexBlockDeclaration(word, line))
+			line := strings.Split(word, " ")
+			for _, word := range line {
+				word = strings.Trim(word, "\n ")
+				if word[0] == '!' {
+					tokens = append(tokens, l.lexBlockDeclaration(word, i))
+				}
+				switch word {
+					case "SIG" : tokens = append(tokens, types.Token{Type: types.TK_SIG})
+					case "<-"  : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN})
+					case "AND" : tokens = append(tokens, types.Token{Type: types.TK_AND})
+					case "OR"  : tokens = append(tokens, types.Token{Type: types.TK_OR})
+					case "XOR" : tokens = append(tokens, types.Token{Type: types.TK_XOR})
+					case "NOT" : tokens = append(tokens, types.Token{Type: types.TK_NOT})
+					case "NAND": tokens = append(tokens, types.Token{Type: types.TK_NAND})
+					case "NOR" : tokens = append(tokens, types.Token{Type: types.TK_NOR})
+					case "XNOR" : tokens = append(tokens, types.Token{Type: types.TK_XNOR})
+				}
+	
 			}
 		}
 	}

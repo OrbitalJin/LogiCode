@@ -17,6 +17,8 @@ func readSource(path string) string {
 }
 
 func main(){
+  args := os.Args[1:]
+  fmt.Println(args) 
   source := readSource("foo.lc");
   l := internal.NewLexer(source);
   lexed := l.Lex();

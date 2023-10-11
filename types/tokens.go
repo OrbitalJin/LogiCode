@@ -4,7 +4,7 @@ const (
 	TK_ASSIGN TokenType = iota
 	TK_IDENT
 	TK_INT
-	TK_SIGN
+	TK_SIG
 	TK_LPAREN
 	TK_RPAREN
 	TK_AND
