@@ -45,6 +45,7 @@ func (l *Lexer) Lex() (*[]types.Token, error) {
 		ch := l.read()
 		// Only try to lex if the current char is not a WhiteSpace
 		if !l.isWhiteSpace(ch) {
+			fmt.Println(string(ch))
 			tk, err := l.nextToken()
 			if err != nil {
 				return &table, err
@@ -66,11 +67,16 @@ func (l *Lexer) nextToken() (types.Token, error) {
 	var ch byte = l.read()
 	var err error
 
-	switch ch {
-	case ';':
-		token, err = l.readSemiColumn()
-	default:
-		return token, l.syntaxError(ch)
+	if l.isNumber(ch) {
+		token = l.readSignal()
+	}
+	if l.isAlpha(ch) {
+		switch ch {
+		case ';':
+			token, err = l.readSemiColumn()
+		default:
+			return token, l.syntaxError(ch)
+		}
 	}
 	return token, err
 }
@@ -82,8 +88,18 @@ func (l *Lexer) readSemiColumn() (types.Token, error) {
 
 // TODO
 // Tokenize Signals (Integers)
-func (l *Lexer) readSignal() (types.Token, error) {
-	return types.Token{}, nil
+func (l *Lexer) readSignal() types.Token {
+	token := types.Token{Pos: l.pos}
+
+	// Loop until the next char is not a number
+	for l.pointer < len(l.src) && l.isNumber(l.read()) {
+		token.Value += string(l.read())
+		l.pointer++
+	}
+	l.pointer--
+
+	token.Type = types.TK_SIGNAL
+	return token
 }
 
 // TODO
@@ -127,6 +143,14 @@ func (l *Lexer) computeNewPos(ch byte) {
 // Reads and returs the current byte
 func (l *Lexer) read() byte {
 	return l.src[l.pointer]
+}
+
+// Peek the next byte
+func (l *Lexer) peek() (byte, error) {
+	if l.pointer+1 >= len(l.src) {
+		return 0, fmt.Errorf(types.ERR_EOF)
+	}
+	return l.src[l.pointer+1], nil
 }
 
 // Syntax error handler
