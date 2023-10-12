@@ -4,7 +4,7 @@ type TokenType int
 
 type Token struct {
 	Type   TokenType
-	Value  string
+	Literal  string
 	Symbol string
 	Pos    Pos
 }
@@ -63,3 +63,13 @@ var TokenTypeStrings = map[TokenType]string{
 	TK_END:          "!End",
 	TK_EOF:          "EOF",
 }
+
+// Reverse the map
+
+var StringsTypeToken = map[string]TokenType{}
+func init() {
+	for k, v := range TokenTypeStrings {
+		StringsTypeToken[v] = k
+	}
+}
+	

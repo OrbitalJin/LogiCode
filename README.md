@@ -55,12 +55,12 @@ Here are some of the soon-to-be Lexable tokens:
 
 | Token Type | Description          | Token Type     | Description           |
 | ---------- | -------------------- | -------------- | --------------------- |
-| `ASLETN`   | Assignment operator  | `EOF`          | End of file           |
+| `ASSIGN`   | Assignment operator  | `EOF`          | End of file           |
 | `IDENT`    | Identifier           | `DECLARESTART` | Declare start keyword |
 | `INT`      | Integer              | `DECLAREEND`   | Declare end keyword   |
-| `LETN`     | Signal               | `PROGRAMSTART` | Program start keyword |
-| `LPAREN`   | Left parenthesis?    | `PROGRAMEND`   | Program end keyword   |
-| `RPAREN`   | Right parenthesis?   | `BEGIN`        | Begin keyword         |
+| `LET`      | Signal               | `PROGRAMSTART` | Program start keyword |
+| ???        | ???                  | `PROGRAMEND`   | Program end keyword   |
+| ???        | ???                  | `BEGIN`        | Begin keyword         |
 | `AND`      | Boolean and keyword  | `END`          | End keyword           |
 | `OR`       | Boolean or keyword   | `SEMICOLON`    | Semicolon             |
 | `XOR`      | Boolean xor keyword  | `WRITE`        | Write keyword         |
@@ -71,24 +71,24 @@ Here are some of the soon-to-be Lexable tokens:
 
 > **Note** These are reserved keywords that cannot be used as identifiers.
 
--   [x] Lex Signal (i.e. `LETNAL`)
--   [x] Lex Semicolon (i.e. `SEMICOL`)
--   [x] Lex Assignment operator (i.e. `ASSIGN`)
+-   [x] Lex Identifier (i.e. `TK_IDENT`)
+-   [x] Lex Assignment operator (i.e. `TK_ASSIGN`)
+-   [x] Lex Signal (i.e. `TK_SIGNAL`)
+-   [x] Lex Semicolon (i.e. `TK_SEMICOL`)
 -   [x] Handle Empty Files
--   [ ] Lex Write keyword (i.e. `WRITE`)
--   [ ] Lex Read keyword (i.e. `READ`)
--   [ ] Lex Let keyword (i.e. `LET`)
--   [ ] Lex Identifier (i.e. `IDENT`)
--   [ ] Lex Boolean and keyword (i.e. `AND`)
--   [ ] Lex Boolean or keyword (i.e. `OR`)
--   [ ] Lex Boolean xor keyword (i.e. `XOR`)
--   [ ] Lex Boolean not keyword (i.e. `NOT`)
--   [ ] Lex Boolean nand keyword (i.e. `NAND`)
--   [ ] Lex Boolean nor keyword (i.e. `NOR`)
--   [ ] Lex Boolean xnor keyword (i.e. `XNOR`)
--   [ ] Lex Entry Point delimiters (i.e. `BEGIN` and `END`)
--   [ ] Lex Declare delimiters (i.e. `DECLARESTART` and `DECLAREEND`)
--   [ ] Lex Program delimiters (i.e. `PROGRAMSTART` and `PROGRAMEND`)
+-   [ ] Lex Write keyword (i.e. `TK_WRITE`)
+-   [ ] Lex Read keyword (i.e. `TK_READ`)
+-   [ ] Lex Let keyword (i.e. `TK_LET`)
+-   [ ] Lex Boolean and keyword (i.e. `TK_AND`)
+-   [ ] Lex Boolean or keyword (i.e. `TK_OR`)
+-   [ ] Lex Boolean xor keyword (i.e. `TK_XOR`)
+-   [ ] Lex Boolean not keyword (i.e. `TK_NOT`)
+-   [ ] Lex Boolean nand keyword (i.e. `TK_NAND`)
+-   [ ] Lex Boolean nor keyword (i.e. `TK_NOR`)
+-   [ ] Lex Boolean xnor keyword (i.e. `TK_XNOR`)
+-   [ ] Lex Entry Point delimiters (i.e. `TK_BEGIN` and `TK_END`)
+-   [ ] Lex Declare delimiters (i.e. `TK_DECLARESTART` and `TK_DECLAREEND`)
+-   [ ] Lex Program delimiters (i.e. `TK_PROGRAMSTART` and `TK_PROGRAMEND`)
 -   [ ] Lex Comments (i.e `--`) (Filter out)
 
 ## Parser

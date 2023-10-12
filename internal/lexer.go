@@ -65,7 +65,7 @@ func (l *Lexer) Lex() (*[]types.Token, error) {
 func (l *Lexer) nextToken() (types.Token, error) {
 	var token types.Token
 	var ch byte = l.read()
-	var err error
+	var err error = nil
 
 	if l.isNumber(ch) {
 		token = l.readSignal()
@@ -77,8 +77,9 @@ func (l *Lexer) nextToken() (types.Token, error) {
 
 		case '<':
 			token, err = l.readAssignment()
+
 		default:
-			return token, l.syntaxError(ch, "")
+			token, err = l.readIdentifier()
 		}
 	}
 	return token, err
@@ -86,7 +87,7 @@ func (l *Lexer) nextToken() (types.Token, error) {
 
 // Tokenize Semi Column
 func (l *Lexer) readSemiColumn() (types.Token, error) {
-	return types.Token{Type: types.TK_SEMICOL, Pos: l.pos}, nil
+	return types.Token{Type: types.TK_SEMICOL, Literal: ";", Pos: l.pos}, nil
 }
 
 // Tokenize Signals (Integers)
@@ -95,7 +96,7 @@ func (l *Lexer) readSignal() types.Token {
 
 	// Loop until the next char is not a number
 	for l.pointer < len(l.src) && l.isNumber(l.read()) {
-		token.Value += string(l.read())
+		token.Literal += string(l.read())
 		l.pointer++
 	}
 	l.pointer--
@@ -118,14 +119,32 @@ func (l *Lexer) readAssignment() (types.Token, error) {
 		return token, l.syntaxError(ch, literal)
 	}
 	token.Type = types.TK_ASSIGN
-	token.Value = literal
+	token.Literal = literal
 	l.pointer++
 	return token, nil
 }
 
-// TODO
 // Tokenize Identifiers
 func (l *Lexer) readIdentifier() (types.Token, error) {
+	token := types.Token{Pos: l.pos}
+	var str string
+
+	// Loop until the next char doesn't verify the isIdentifier condition
+	for l.pointer < len(l.src) && l.isIdentifier(l.read()){
+		str += string(l.read())
+		l.pointer++
+	}
+	l.pointer--
+
+	token.Type = types.TK_IDENT
+	token.Literal = str
+
+	return token, nil
+}
+
+// TODO
+// Tokenize BitWise Operators (e.g &, |, ~)
+func (l *Lexer) readOperator() (types.Token, error) {
 	return types.Token{}, nil
 }
 
@@ -135,12 +154,6 @@ func (l *Lexer) readBlockDelimiter() (types.Token, error) {
 	token := types.Token{}
 
 	return token, nil
-}
-
-// TODO
-// Tokenize BitWise Operators (e.g &, |, ~)
-func (l *Lexer) readOperator() (types.Token, error) {
-	return types.Token{}, nil
 }
 
 // Skip White Spaces e.g \n, \t, ` `
@@ -183,19 +196,24 @@ func (l *Lexer) syntaxError(ch byte, suggest string) error {
 	return fmt.Errorf(err, l.prefix, string(ch), l.pos.Row, l.pos.Col)
 }
 
-// Makes sure that L hasn't reached the end of the HLL src
+// Makes sure that the Lexer hasn't reached the end of the HLL src
 func (l *Lexer) srcEmpty() bool {
 	return len(l.src) <= l.pointer
 }
 
-// Checks wheter the token at a certain position is Skippable
+// Checks wether the token at a certain position is Skippable
 func (l *Lexer) isWhiteSpace(ch byte) bool {
 	return unicode.IsSpace(rune(ch))
 }
 
-// Checks wehter a char is alpah
+// Checks wether a char is alpah
 func (l *Lexer) isAlpha(ch byte) bool {
 	return !l.isNumber(ch)
+}
+
+// Check wether a char is assignable to an identifier
+func (l *Lexer) isIdentifier(ch byte) bool {
+	return ch != ';' && ch != '<' && (l.isAlpha(ch) || l.isNumber(ch)) && !l.isWhiteSpace(ch)
 }
 
 // Checks wether a character is str representation of an int
