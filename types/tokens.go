@@ -2,6 +2,7 @@ package types
 
 const (
 	TK_ASSIGN TokenType = iota + 1
+	TK_SEMICOL
 	TK_IDENT
 	TK_SIGNAL
 	TK_WRITE
@@ -25,9 +26,17 @@ const (
 
 type TokenType int
 
+type Pos struct {
+	Row int
+	Col int
+}
+
 type Token struct {
 	Type TokenType
 	Value string
 	Symbol string
+	Pos Pos
 }
+
+type SymTable []Token
 

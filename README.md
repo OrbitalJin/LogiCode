@@ -41,6 +41,13 @@ graph LR;
   Interpreter --> O(Output);
 ```
 
+## Roadmap
+
+-   [ ] Lexer Implementation
+-   [ ] Error Handling Infrastructure across all modules
+-   [ ] Parser Implementation
+-   [ ] REPL Implementation
+
 ## Lexer
 
 LogiCode embraces a simple syntax that is easy to learn and use.
@@ -117,5 +124,3 @@ graph TD;
 ```
 
 > **Warning** The `AST` is not a binary tree. It is a tree data structure that can have any number of children.
-
-## Todo

@@ -10,7 +10,4 @@
   LET baz <- foo OR bar
   READ baz
 !End
-
-
-
 !EndProgram
