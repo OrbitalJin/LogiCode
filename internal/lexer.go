@@ -3,16 +3,17 @@ package internal
 import (
 	"fmt"
 	"strconv"
+	"unicode"
 
 	"github.com/OrbitalJin/LogiCode/meta"
 	"github.com/OrbitalJin/LogiCode/types"
 )
 
+const prefix string = meta.COMPILER_PREFIX + " Lexer -"
+
 /*
 Lexer Struct
 */
-const prefix string = meta.COMPILER_PREFIX + " Lexer -"
-
 type Lexer struct {
 	src     string
 	pointer int
@@ -20,6 +21,7 @@ type Lexer struct {
 	prefix  string
 }
 
+// Constructor
 func NewLexer(src string) *Lexer {
 	return &Lexer{
 		prefix:  prefix,
@@ -38,41 +40,44 @@ func (l *Lexer) Lex() (*[]types.Token, error) {
 	if l.srcEmpty() {
 		return &table, fmt.Errorf(types.ERR_EMPTY_FILE)
 	}
-	for !l.srcEmpty() {
-		tk, err := l.nextToken()
-		if err != nil {
-			return &table, err
-		}
-		table = append(table, tk)
 
+	for l.pointer < len(l.src) {
+		ch := l.read()
+		// Only try to lex if the current char is not a WhiteSpace
+		if !l.isWhiteSpace(ch) {
+			tk, err := l.nextToken()
+			if err != nil {
+				return &table, err
+			}
+			l.pos.Col++
+			table = append(table, tk)
+		} else {
+			l.computeNewPos(ch)
+		}
 		l.pointer++
 	}
+	table = append(table, types.Token{Type: types.TK_EOF, Pos: l.pos})
 	return &table, nil
 }
 
-// Return the Next Token
+// Return a token of the currently pointed byte
 func (l *Lexer) nextToken() (types.Token, error) {
 	var token types.Token
-	ch, err := l.read()
+	var ch byte = l.read()
+	var err error
 
-	if !l.isWhiteSpace(ch) {
-		switch ch {
-		case ";":
-			token, err = l.readSemiColumn()
-			// case "!":
-			// token, err = l.readBlockDelimiter()
-		default:
-			return token, l.syntaxError(ch)
-		}
+	switch ch {
+	case ';':
+		token, err = l.readSemiColumn()
+	default:
+		return token, l.syntaxError(ch)
 	}
 	return token, err
 }
 
 // Tokenize Semi Column
 func (l *Lexer) readSemiColumn() (types.Token, error) {
-	l.pos.Col++
-	token := types.Token{Type: types.TK_SEMICOL, Pos: l.pos}
-	return token, nil
+	return types.Token{Type: types.TK_SEMICOL, Pos: l.pos}, nil
 }
 
 // TODO
@@ -90,7 +95,9 @@ func (l *Lexer) readIdentifier() (types.Token, error) {
 // TODO
 // Tokenize Block delimiters (e.g. !Program, !Begin)
 func (l *Lexer) readBlockDelimiter() (types.Token, error) {
-	return types.Token{}, nil
+	token := types.Token{}
+
+	return token, nil
 }
 
 // TODO
@@ -99,26 +106,33 @@ func (l *Lexer) readOperator() (types.Token, error) {
 	return types.Token{}, nil
 }
 
-// Read the character at the current pointer index
-func (l *Lexer) read() (string, error) {
-	if l.pointer < len(l.src) {
-		return string(l.src[l.pointer]), nil
+// Skip White Spaces e.g \n, \t, ` `
+func (l *Lexer) skipWhiteSpace() {
+	for l.pointer < len(l.src) && unicode.IsSpace(rune(l.src[l.pointer])) {
+		l.pointer++
 	}
-	return "", fmt.Errorf("%s Peek: Out of index", l.prefix)
 }
 
-// Peek at the next character
-func (l *Lexer) peek(i int) (string, error) {
-	if l.pointer+i < len(l.src) {
-		return string(l.src[i]), nil
+// Compute the new position
+func (l *Lexer) computeNewPos(ch byte) {
+	switch ch {
+	case '\n':
+		l.pos.Row++
+		l.pos.Col = 1
+	case ' ':
+		l.pos.Col++
 	}
-	return "", fmt.Errorf("%s Peek: Out of index", l.prefix)
+}
+
+// Reads and returs the current byte
+func (l *Lexer) read() byte {
+	return l.src[l.pointer]
 }
 
 // Syntax error handler
-func (l *Lexer) syntaxError(s string) error {
+func (l *Lexer) syntaxError(ch byte) error {
 	var err = "%s Untokenizable literal: %s at (%d, %d)"
-	return fmt.Errorf(err, l.prefix, s, l.pos.Row, l.pos.Col)
+	return fmt.Errorf(err, l.prefix, string(ch), l.pos.Row, l.pos.Col)
 }
 
 // Makes sure that L hasn't reached the end of the HLL src
@@ -127,20 +141,17 @@ func (l *Lexer) srcEmpty() bool {
 }
 
 // Checks wheter the token at a certain position is Skippable
-func (l *Lexer) isWhiteSpace(s string) bool {
-	if s == "\n" {
-		l.pos.Row++
-	}
-	return s == " " || s == "\t " || s == "\n"
+func (l *Lexer) isWhiteSpace(ch byte) bool {
+	return unicode.IsSpace(rune(ch))
 }
 
 // Checks wehter a char is alpah
-func (l *Lexer) isAlpha(s string) bool {
-	return !l.isNumber(s)
+func (l *Lexer) isAlpha(ch byte) bool {
+	return !l.isNumber(ch)
 }
 
 // Checks wether a character is str representation of an int
-func (l *Lexer) isNumber(s string) bool {
-	_, err := strconv.Atoi(s)
+func (l *Lexer) isNumber(ch byte) bool {
+	_, err := strconv.Atoi(string(ch))
 	return err == nil
 }
