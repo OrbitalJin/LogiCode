@@ -1,13 +1,1 @@
-!Program
-!Declare
-  LET x <- 001
-  LET y <- 010
-  LET z <- 011
-!EndDeclare
-!Begin
-  LET foo <- x AND y
-  LET bar <- NOT z
-  LET baz <- foo OR bar
-  READ baz
-!End
-!EndProgram
+;clear

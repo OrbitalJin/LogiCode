@@ -70,7 +70,7 @@ Here are some of the soon-to-be Lexable tokens:
 | `XNOR`     | Boolean xnor keyword |
 
 > **Note** These are reserved keywords that cannot be used as identifiers.
-
+-   [x] Handle Empty Files
 -   [x] Lex Write keyword (i.e. `WRITE`)
 -   [x] Lex Read keyword (i.e. `READ`)
 -   [x] Lex Let keyword (i.e. `LET`)
