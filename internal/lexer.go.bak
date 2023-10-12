@@ -54,7 +54,7 @@ func (l *Lexer) Lex() []types.Token {
 								tokens = append(tokens, l.lexBlockDeclaration(word, i))
 							// Identifiers
 							} else {
-								tokens = append(tokens, types.Token{Type: types.TK_IDENT, Symbol: word})
+								tokens = append(tokens, types.Token{Type: types.TK_IDENTIFIER, Symbol: word})
 							}
 						// Invalid Token
 						} else {

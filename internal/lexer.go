@@ -79,7 +79,7 @@ func (l *Lexer) nextToken() (types.Token, error) {
 			token, err = l.readAssignment()
 
 		default:
-			token, err = l.readIdentifier()
+			token, err = l.readIdentifierOrKeyword()
 		}
 	}
 	return token, err
@@ -108,7 +108,7 @@ func (l *Lexer) readSignal() types.Token {
 // Tokenize Assignment operator
 func (l *Lexer) readAssignment() (types.Token, error) {
 	token := types.Token{Pos: l.pos}
-	literal := types.TokenTypeStrings[types.TK_ASSIGN]
+	literal := types.TokenTypeLiterals[types.TK_ASSIGN]
 
 	// Check if the next char is a hyphen
 	ch, err := l.peek()
@@ -124,8 +124,8 @@ func (l *Lexer) readAssignment() (types.Token, error) {
 	return token, nil
 }
 
-// Tokenize Identifiers
-func (l *Lexer) readIdentifier() (types.Token, error) {
+// Tokenize Identifiers And Keywords
+func (l *Lexer) readIdentifierOrKeyword() (types.Token, error) {
 	token := types.Token{Pos: l.pos}
 	var str string
 
@@ -136,7 +136,18 @@ func (l *Lexer) readIdentifier() (types.Token, error) {
 	}
 	l.pointer--
 
-	token.Type = types.TK_IDENT
+	
+	// If the string is a keyword, return the keyword token
+	kw, found := l.isKeyword(str)
+	switch found {
+	case true: token.Type = kw
+	case false:
+		if str[0] == '!'{
+			return token, l.syntaxError(str[0], "")
+		}
+	default:
+		token.Type = types.TK_IDENTIFIER
+	}
 	token.Literal = str
 
 	return token, nil
@@ -148,19 +159,21 @@ func (l *Lexer) readOperator() (types.Token, error) {
 	return types.Token{}, nil
 }
 
-// TODO
-// Tokenize Block delimiters (e.g. !Program, !Begin)
-func (l *Lexer) readBlockDelimiter() (types.Token, error) {
-	token := types.Token{}
-
-	return token, nil
-}
+/// Helper Functions
 
 // Skip White Spaces e.g \n, \t, ` `
 func (l *Lexer) skipWhiteSpace() {
 	for l.pointer < len(l.src) && unicode.IsSpace(rune(l.src[l.pointer])) {
 		l.pointer++
 	}
+}
+
+// Checks wether a string is a keyword
+func (l *Lexer) isKeyword(str string) (types.TokenType, bool) {
+	if _, found := types.Keywords[str]; found {
+		return types.Keywords[str], true
+	}
+	return -1, false
 }
 
 // Compute the new position

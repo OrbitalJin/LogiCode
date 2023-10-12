@@ -27,7 +27,7 @@ const (
 	TK_XOR
 	TK_XNOR
 	TK_NOT
-	TK_IDENT
+	TK_IDENTIFIER
 	TK_LET
 	TK_WRITE
 	TK_READ
@@ -40,7 +40,7 @@ const (
 	TK_EOF
 )
 
-var TokenTypeStrings = map[TokenType]string{
+var TokenTypeLiterals = map[TokenType]string{
 	TK_SEMICOL:      ";",
 	TK_SIGNAL:       "SIGNAL",
 	TK_ASSIGN:       "<-",
@@ -51,7 +51,7 @@ var TokenTypeStrings = map[TokenType]string{
 	TK_XOR:          "XOR",
 	TK_XNOR:         "XNOR",
 	TK_NOT:          "NOT",
-	TK_IDENT:        "IDENT",
+	TK_IDENTIFIER:        "IDENT",
 	TK_LET:          "LET",
 	TK_WRITE:        "WRITE",
 	TK_READ:         "READ",
@@ -66,10 +66,10 @@ var TokenTypeStrings = map[TokenType]string{
 
 // Reverse the map
 
-var StringsTypeToken = map[string]TokenType{}
+var Keywords = map[string]TokenType{}
 func init() {
-	for k, v := range TokenTypeStrings {
-		StringsTypeToken[v] = k
+	for k, v := range TokenTypeLiterals {
+		Keywords[v] = k
 	}
 }
 	

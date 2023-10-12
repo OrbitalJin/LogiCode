@@ -53,42 +53,43 @@ graph LR;
 LogiCode embraces a simple syntax that is easy to learn and use.
 Here are some of the soon-to-be Lexable tokens:
 
-| Token Type | Description          | Token Type     | Description           |
-| ---------- | -------------------- | -------------- | --------------------- |
-| `ASSIGN`   | Assignment operator  | `EOF`          | End of file           |
-| `IDENT`    | Identifier           | `DECLARESTART` | Declare start keyword |
-| `INT`      | Integer              | `DECLAREEND`   | Declare end keyword   |
-| `LET`      | Signal               | `PROGRAMSTART` | Program start keyword |
-| ???        | ???                  | `PROGRAMEND`   | Program end keyword   |
-| ???        | ???                  | `BEGIN`        | Begin keyword         |
-| `AND`      | Boolean and keyword  | `END`          | End keyword           |
-| `OR`       | Boolean or keyword   | `SEMICOLON`    | Semicolon             |
-| `XOR`      | Boolean xor keyword  | `WRITE`        | Write keyword         |
-| `NOT`      | Boolean not keyword  | `READ`         | Read keyword          |
-| `NAND`     | Boolean nand keyword | `LET`          | Let keyword           |
-| `NOR`      | Boolean nor keyword  |
-| `XNOR`     | Boolean xnor keyword |
+| Token Type | Description           | Token Type     | Description           |
+| ---------- | --------------------- | -------------- | --------------------- |
+| `ASSIGN`   | Assignment operator   | `EOF`          | End of file           |
+| `IDENT`    | Identifier            | `DECLARESTART` | Declare start keyword |
+| `INT`      | Integer               | `DECLAREEND`   | Declare end keyword   |
+| `LET`      | Signal                | `PROGRAMSTART` | Program start keyword |
+| ???        | ???                   | `PROGRAMEND`   | Program end keyword   |
+| ???        | ???                   | `BEGIN`        | Begin keyword         |
+| `AND`      | BitWise and operator  | `END`          | End keyword           |
+| `OR`       | BitWise or operator   | `SEMICOLON`    | Semicolon             |
+| `XOR`      | BitWise xor operator  | `WRITE`        | Write keyword         |
+| `NOT`      | BitWise not operator  | `READ`         | Read keyword          |
+| `NAND`     | BitWise nand operator | `LET`          | Let keyword           |
+| `NOR`      | BitWise nor operator  |
+| `XNOR`     | BitWise xnor operator |
 
 > **Note** These are reserved keywords that cannot be used as identifiers.
 
--   [x] Lex Identifier (i.e. `TK_IDENT`)
+-   [x] Lex Identifier (i.e. `TK_IDENTIFIER`)
 -   [x] Lex Assignment operator (i.e. `TK_ASSIGN`)
 -   [x] Lex Signal (i.e. `TK_SIGNAL`)
 -   [x] Lex Semicolon (i.e. `TK_SEMICOL`)
 -   [x] Handle Empty Files
--   [ ] Lex Write keyword (i.e. `TK_WRITE`)
--   [ ] Lex Read keyword (i.e. `TK_READ`)
--   [ ] Lex Let keyword (i.e. `TK_LET`)
--   [ ] Lex Boolean and keyword (i.e. `TK_AND`)
--   [ ] Lex Boolean or keyword (i.e. `TK_OR`)
--   [ ] Lex Boolean xor keyword (i.e. `TK_XOR`)
--   [ ] Lex Boolean not keyword (i.e. `TK_NOT`)
--   [ ] Lex Boolean nand keyword (i.e. `TK_NAND`)
--   [ ] Lex Boolean nor keyword (i.e. `TK_NOR`)
--   [ ] Lex Boolean xnor keyword (i.e. `TK_XNOR`)
--   [ ] Lex Entry Point delimiters (i.e. `TK_BEGIN` and `TK_END`)
--   [ ] Lex Declare delimiters (i.e. `TK_DECLARESTART` and `TK_DECLAREEND`)
--   [ ] Lex Program delimiters (i.e. `TK_PROGRAMSTART` and `TK_PROGRAMEND`)
+-   [x] Lex Keywords
+    -   [x] Lex Write keyword (i.e. `TK_WRITE`)
+    -   [x] Lex Read keyword (i.e. `TK_READ`)
+    -   [x] Lex Entry Point delimiters (i.e. `TK_BEGIN` and `TK_END`)
+    -   [x] Lex Let keyword (i.e. `TK_LET`)
+    -   [x] Lex Declare delimiters (i.e. `TK_DECLARESTART` and `TK_DECLAREEND`)
+    -   [x] Lex Program delimiters (i.e. `TK_PROGRAMSTART` and `TK_PROGRAMEND`)
+-   [ ] Lex BitWise and operator (i.e. `TK_AND`)
+-   [ ] Lex BitWise or operator (i.e. `TK_OR`)
+-   [ ] Lex BitWise xor operator (i.e. `TK_XOR`)
+-   [ ] Lex BitWise not operator (i.e. `TK_NOT`)
+-   [ ] Lex BitWise nand operator (i.e. `TK_NAND`)
+-   [ ] Lex BitWise nor operator (i.e. `TK_NOR`)
+-   [ ] Lex BitWise xnor operator (i.e. `TK_XNOR`)
 -   [ ] Lex Comments (i.e `--`) (Filter out)
 
 ## Parser

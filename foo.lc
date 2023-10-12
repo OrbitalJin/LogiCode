@@ -1,2 +1,14 @@
-!Begin
-_RAX <- 123;
+!Program;
+
+!Declare;
+  LET a <- 001;
+  LET b <- 010;
+!EndDeclare;
+
+!Begin;
+  a <- b;
+  b <- a;
+  WRITE c;
+!End;
+
+!EndProgram;
