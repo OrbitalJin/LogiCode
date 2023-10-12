@@ -73,12 +73,12 @@ Here are some of the soon-to-be Lexable tokens:
 
 -   [x] Lex Signal (i.e. `LETNAL`)
 -   [x] Lex Semicolon (i.e. `SEMICOL`)
+-   [x] Lex Assignment operator (i.e. `ASSIGN`)
 -   [x] Handle Empty Files
 -   [ ] Lex Write keyword (i.e. `WRITE`)
 -   [ ] Lex Read keyword (i.e. `READ`)
 -   [ ] Lex Let keyword (i.e. `LET`)
 -   [ ] Lex Identifier (i.e. `IDENT`)
--   [ ] Lex Assignment operator (i.e. `ASLETN`)
 -   [ ] Lex Boolean and keyword (i.e. `AND`)
 -   [ ] Lex Boolean or keyword (i.e. `OR`)
 -   [ ] Lex Boolean xor keyword (i.e. `XOR`)

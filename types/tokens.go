@@ -1,5 +1,21 @@
 package types
 
+type TokenType int
+
+type Token struct {
+	Type   TokenType
+	Value  string
+	Symbol string
+	Pos    Pos
+}
+
+type Pos struct {
+	Row int
+	Col int
+}
+
+type SymTable []Token
+
 const (
 	TK_SEMICOL TokenType = iota + 1
 	TK_SIGNAL
@@ -24,18 +40,26 @@ const (
 	TK_EOF
 )
 
-type TokenType int
-
-type Pos struct {
-	Row int
-	Col int
+var TokenTypeStrings = map[TokenType]string{
+	TK_SEMICOL:      ";",
+	TK_SIGNAL:       "SIGNAL",
+	TK_ASSIGN:       "<-",
+	TK_AND:          "AND",
+	TK_NAND:         "NAND",
+	TK_OR:           "OR",
+	TK_NOR:          "NOR",
+	TK_XOR:          "XOR",
+	TK_XNOR:         "XNOR",
+	TK_NOT:          "NOT",
+	TK_IDENT:        "IDENT",
+	TK_LET:          "LET",
+	TK_WRITE:        "WRITE",
+	TK_READ:         "READ",
+	TK_DECLARESTART: "!Declare",
+	TK_DECLAREEND:   "!EndDeclare",
+	TK_PROGRAMSTART: "!Program",
+	TK_PROGRAMEEND:  "!EndProgram",
+	TK_BEGIN:        "!Begin",
+	TK_END:          "!End",
+	TK_EOF:          "EOF",
 }
-
-type Token struct {
-	Type   TokenType
-	Value  string
-	Symbol string
-	Pos    Pos
-}
-
-type SymTable []Token

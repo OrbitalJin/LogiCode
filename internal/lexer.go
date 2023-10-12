@@ -74,8 +74,11 @@ func (l *Lexer) nextToken() (types.Token, error) {
 		switch ch {
 		case ';':
 			token, err = l.readSemiColumn()
+
+		case '<':
+			token, err = l.readAssignment()
 		default:
-			return token, l.syntaxError(ch)
+			return token, l.syntaxError(ch, "")
 		}
 	}
 	return token, err
@@ -86,7 +89,6 @@ func (l *Lexer) readSemiColumn() (types.Token, error) {
 	return types.Token{Type: types.TK_SEMICOL, Pos: l.pos}, nil
 }
 
-// TODO
 // Tokenize Signals (Integers)
 func (l *Lexer) readSignal() types.Token {
 	token := types.Token{Pos: l.pos}
@@ -100,6 +102,25 @@ func (l *Lexer) readSignal() types.Token {
 
 	token.Type = types.TK_SIGNAL
 	return token
+}
+
+// Tokenize Assignment operator
+func (l *Lexer) readAssignment() (types.Token, error) {
+	token := types.Token{Pos: l.pos}
+	literal := types.TokenTypeStrings[types.TK_ASSIGN]
+
+	// Check if the next char is a hyphen
+	ch, err := l.peek()
+	if err != nil {
+		return token, fmt.Errorf(types.ERR_EOF)
+	}
+	if ch != '-' {
+		return token, l.syntaxError(ch, literal)
+	}
+	token.Type = types.TK_ASSIGN
+	token.Value = literal
+	l.pointer++
+	return token, nil
 }
 
 // TODO
@@ -154,8 +175,11 @@ func (l *Lexer) peek() (byte, error) {
 }
 
 // Syntax error handler
-func (l *Lexer) syntaxError(ch byte) error {
+func (l *Lexer) syntaxError(ch byte, suggest string) error {
 	var err = "%s Untokenizable literal: %s at (%d, %d)"
+	if suggest != "" {
+		err += "\nDid you mean: " + suggest + "?"
+	}
 	return fmt.Errorf(err, l.prefix, string(ch), l.pos.Row, l.pos.Col)
 }
 
