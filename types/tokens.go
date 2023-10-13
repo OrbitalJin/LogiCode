@@ -2,6 +2,7 @@ package types
 
 type TokenType int
 
+// Token is a struct that holds the type and literal of a token
 type Token struct {
 	Type   TokenType
 	Literal  string
@@ -9,24 +10,19 @@ type Token struct {
 	Pos    Pos
 }
 
+// Pos is a struct that holds the position of a token
 type Pos struct {
 	Row int
 	Col int
 }
 
+// SymTable is a slice of Token
 type SymTable []Token
 
+// TokenType enum
 const (
 	TK_SEMICOL TokenType = iota + 1
 	TK_SIGNAL
-	TK_ASSIGN
-	TK_AND
-	TK_NAND
-	TK_OR
-	TK_NOR
-	TK_XOR
-	TK_XNOR
-	TK_NOT
 	TK_IDENTIFIER
 	TK_LET
 	TK_WRITE
@@ -38,20 +34,22 @@ const (
 	TK_BEGIN
 	TK_END
 	TK_EOF
+	// Operators
+	OP_ASSIGN 
+	OP_AND
+	OP_NAND
+	OP_OR
+	OP_NOR
+	OP_XOR
+	OP_XNOR
+	OP_NOT
 )
 
-var TokenTypeLiterals = map[TokenType]string{
+// KeywordLiterals is a map of TokenType to their string literal
+var KeywordLiterals = map[TokenType]string{
 	TK_SEMICOL:      ";",
 	TK_SIGNAL:       "SIGNAL",
-	TK_ASSIGN:       "<-",
-	TK_AND:          "AND",
-	TK_NAND:         "NAND",
-	TK_OR:           "OR",
-	TK_NOR:          "NOR",
-	TK_XOR:          "XOR",
-	TK_XNOR:         "XNOR",
-	TK_NOT:          "NOT",
-	TK_IDENTIFIER:        "IDENT",
+	TK_IDENTIFIER:   "IDENT",
 	TK_LET:          "LET",
 	TK_WRITE:        "WRITE",
 	TK_READ:         "READ",
@@ -65,11 +63,30 @@ var TokenTypeLiterals = map[TokenType]string{
 }
 
 // Reverse the map
-
 var Keywords = map[string]TokenType{}
 func init() {
-	for k, v := range TokenTypeLiterals {
+	for k, v := range KeywordLiterals {
 		Keywords[v] = k
+	}
+}
+
+// OperatorsLiterals is a map of TokenType to their string literal
+var OperatorsLiterals = map[TokenType]string{
+	OP_ASSIGN: "<-",
+	OP_AND:    "AND",
+	OP_NAND:   "NAND",
+	OP_OR:     "OR",
+	OP_NOR:    "NOR",
+	OP_XOR:    "XOR",
+	OP_XNOR:   "XNOR",
+	OP_NOT:    "NOT",
+}
+
+// Reverse the map
+var Operators = map[string]TokenType{}
+func init() {
+	for k, v := range OperatorsLiterals {
+		Operators[v] = k
 	}
 }
 	

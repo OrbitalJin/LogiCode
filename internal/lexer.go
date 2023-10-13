@@ -9,8 +9,6 @@ import (
 	"github.com/OrbitalJin/LogiCode/types"
 )
 
-const prefix string = meta.COMPILER_PREFIX + " Lexer -"
-
 /*
 Lexer Struct
 */
@@ -24,7 +22,7 @@ type Lexer struct {
 // Constructor
 func NewLexer(src string) *Lexer {
 	return &Lexer{
-		prefix:  prefix,
+		prefix:  meta.LEXER_PREFIX,
 		src:     src,
 		pointer: 0,
 		pos: types.Pos{
@@ -45,19 +43,24 @@ func (l *Lexer) Lex() (*[]types.Token, error) {
 		ch := l.read()
 		// Only try to lex if the current char is not a WhiteSpace
 		if !l.isWhiteSpace(ch) {
-			fmt.Println(string(ch))
+			l.debug(ch); // Debug
+
 			tk, err := l.nextToken()
 			if err != nil {
 				return &table, err
 			}
 			l.pos.Col++
 			table = append(table, tk)
+			if meta.DEBUG {fmt.Print(tk, "\n")}// Debug
 		} else {
 			l.computeNewPos(ch)
 		}
 		l.pointer++
 	}
 	table = append(table, types.Token{Type: types.TK_EOF, Pos: l.pos})
+	if meta.DEBUG {
+		fmt.Printf("%v Successfully lexed %d tokens\n", l.prefix, len(table)) // Debug
+	}
 	return &table, nil
 }
 
@@ -79,7 +82,7 @@ func (l *Lexer) nextToken() (types.Token, error) {
 			token, err = l.readAssignment()
 
 		default:
-			token, err = l.readIdentifierOrKeyword()
+			token, err = l.readTokenType()
 		}
 	}
 	return token, err
@@ -108,7 +111,7 @@ func (l *Lexer) readSignal() types.Token {
 // Tokenize Assignment operator
 func (l *Lexer) readAssignment() (types.Token, error) {
 	token := types.Token{Pos: l.pos}
-	literal := types.TokenTypeLiterals[types.TK_ASSIGN]
+	literal := types.OperatorsLiterals[types.OP_ASSIGN]
 
 	// Check if the next char is a hyphen
 	ch, err := l.peek()
@@ -116,16 +119,16 @@ func (l *Lexer) readAssignment() (types.Token, error) {
 		return token, fmt.Errorf(types.ERR_EOF)
 	}
 	if ch != '-' {
-		return token, l.syntaxError(ch, literal)
+		return token, l.syntaxError(string(ch), literal, "Illegal operator")
 	}
-	token.Type = types.TK_ASSIGN
+	token.Type = types.OP_ASSIGN
 	token.Literal = literal
 	l.pointer++
 	return token, nil
 }
 
-// Tokenize Identifiers And Keywords
-func (l *Lexer) readIdentifierOrKeyword() (types.Token, error) {
+// Tokenize Identifiers And Keywords/Operators
+func (l *Lexer) readTokenType() (types.Token, error) {
 	token := types.Token{Pos: l.pos}
 	var str string
 
@@ -135,43 +138,42 @@ func (l *Lexer) readIdentifierOrKeyword() (types.Token, error) {
 		l.pointer++
 	}
 	l.pointer--
-
 	
 	// If the string is a keyword, return the keyword token
-	kw, found := l.isKeyword(str)
-	switch found {
-	case true: token.Type = kw
-	case false:
-		if str[0] == '!'{
-			return token, l.syntaxError(str[0], "")
-		}
-	default:
-		token.Type = types.TK_IDENTIFIER
+	if kw, ok := l.isKeyword(str); ok {
+		token.Type = kw
+		token.Literal = str
+		return token, nil
 	}
+
+	if op, ok := l.isOperator(str); ok {
+		token.Type = op
+		token.Literal = str
+		return token, nil
+	}
+
+	// Otherwise, return an identifier token
+	if str[0] == '!' {return token, l.syntaxError(str, "", "Illegal token in identifier")}
+	token.Type = types.TK_IDENTIFIER
 	token.Literal = str
 
 	return token, nil
 }
 
-// TODO
-// Tokenize BitWise Operators (e.g &, |, ~)
-func (l *Lexer) readOperator() (types.Token, error) {
-	return types.Token{}, nil
-}
-
 /// Helper Functions
 
-// Skip White Spaces e.g \n, \t, ` `
-func (l *Lexer) skipWhiteSpace() {
-	for l.pointer < len(l.src) && unicode.IsSpace(rune(l.src[l.pointer])) {
-		l.pointer++
-	}
-}
-
-// Checks wether a string is a keyword
+// Checks wether a string is a keyword (e.g. !Program, LET)
 func (l *Lexer) isKeyword(str string) (types.TokenType, bool) {
 	if _, found := types.Keywords[str]; found {
 		return types.Keywords[str], true
+	}
+	return -1, false
+}
+
+// Checks wether a string is a  BitWise Operators (e.g &, |, ~)
+func (l *Lexer) isOperator(s string) (types.TokenType, bool) {
+	if _, found := types.Operators[s]; found {
+		return types.Operators[s], true
 	}
 	return -1, false
 }
@@ -200,15 +202,6 @@ func (l *Lexer) peek() (byte, error) {
 	return l.src[l.pointer+1], nil
 }
 
-// Syntax error handler
-func (l *Lexer) syntaxError(ch byte, suggest string) error {
-	var err = "%s Untokenizable literal: %s at (%d, %d)"
-	if suggest != "" {
-		err += "\nDid you mean: " + suggest + "?"
-	}
-	return fmt.Errorf(err, l.prefix, string(ch), l.pos.Row, l.pos.Col)
-}
-
 // Makes sure that the Lexer hasn't reached the end of the HLL src
 func (l *Lexer) srcEmpty() bool {
 	return len(l.src) <= l.pointer
@@ -233,4 +226,29 @@ func (l *Lexer) isIdentifier(ch byte) bool {
 func (l *Lexer) isNumber(ch byte) bool {
 	_, err := strconv.Atoi(string(ch))
 	return err == nil
+}
+
+// Syntax error handler
+func (l *Lexer) syntaxError(s, suggest, info string) error {
+	var err = "%s Untokenizable literal: %s at (%d, %d)"
+	if info != "" {
+		err += "\n--> [Err] " + info
+	}
+	if suggest != "" {
+		if info == "" {
+			err += "\n"
+		} else {
+			err += " - "
+		}
+		err += "Did you mean `" + suggest + "`?"
+	}
+
+	return fmt.Errorf(err, l.prefix, s, l.pos.Row, l.pos.Col)
+}
+
+// Debug
+func (l *Lexer) debug(ch byte) {
+	if meta.DEBUG {
+		fmt.Printf("%s DEBUG - Char: %v, Pointer: %d, Pos: (%d, %d) -> ", l.prefix, string(ch), l.pointer, l.pos.Row, l.pos.Col)
+	}
 }

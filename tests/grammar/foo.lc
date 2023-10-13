@@ -6,9 +6,9 @@
 !EndDeclare;
 
 !Begin;
-  a <- b;
-  b <- a;
-  WRITE c;
+  x <- a XNOR b;
+  y <- a OR b;
+  READ y;
 !End;
 
 !EndProgram;

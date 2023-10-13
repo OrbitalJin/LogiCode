@@ -14,7 +14,7 @@ func getSource() string {
 		fmt.Println(types.ERR_NO_INPUT_FILE)
 		os.Exit(types.ERRNO_NO_INPUT_FILE)
 	}
-	source := readSource("foo.lc")
+	source := readSource(args[0])
 	return source
 }
 
@@ -31,10 +31,8 @@ func readSource(path string) string {
 func main() {
 	source := getSource()
 	l := internal.NewLexer(source)
-	lexed, err := l.Lex()
+	_, err := l.Lex()
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Println(*lexed, len(*lexed))
-	}
+	} 
 }

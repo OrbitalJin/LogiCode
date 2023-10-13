@@ -35,7 +35,7 @@ func (l *Lexer) Lex() []types.Token {
 					case "WRITE": tokens = append(tokens, types.Token{Type: types.TK_WRITE, Symbol: word})
 					case "READ" : tokens = append(tokens, types.Token{Type: types.TK_READ, Symbol: word})
 					case "LET"  : tokens = append(tokens, types.Token{Type: types.TK_LET, Symbol: word})
-					case "<-"   : tokens = append(tokens, types.Token{Type: types.TK_ASSIGN, Symbol: word})
+					case "<-"   : tokens = append(tokens, types.Token{Type: types.OP_ASSIGN, Symbol: word})
 					case "AND"  : tokens = append(tokens, types.Token{Type: types.TK_AND, Symbol: word})
 					case "OR"   : tokens = append(tokens, types.Token{Type: types.TK_OR, Symbol: word})
 					case "XOR"  : tokens = append(tokens, types.Token{Type: types.TK_XOR, Symbol: word})
