@@ -37,12 +37,12 @@ const (
 	// Operators
 	OP_ASSIGN 
 	OP_AND
-	OP_NAND
 	OP_OR
-	OP_NOR
-	OP_XOR
-	OP_XNOR
 	OP_NOT
+	OP_XOR
+	OP_NAND
+	OP_NOR
+	OP_XNOR
 )
 
 // KeywordLiterals is a map of TokenType to their string literal

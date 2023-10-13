@@ -1,6 +1,6 @@
 # LogiCode
 
-LogiCode is a scripting language that is designed to be used for boolean algebra and logic circuit design. It is a simple language that is easy to learn and use. It is designed to be used on Linux systems. It is written in Go which implements a hand-crafted lexer and parser.
+LogiCode is a scripting language that is designed to be used for boolean algebra and logic circuit design. It is a simple language that is easy to learn and use. The compiler is written in Go which implements a hand-crafted lexer and parser.
 
 ## Grammar
 
@@ -31,22 +31,23 @@ This program will output `100` to stdout.
 
 ## Architecture
 
-The [`Lexer`](https://en.wikipedia.org/wiki/Lexical_analysis) produces an array of [`Tokens`](https://bits.netbeans.org/11.1/javadoc/org-netbeans-modules-lexer/index.html?org/netbeans/api/lexer/Token.html) from the source code, which are then passed to the [`Parser`](https://en.wikipedia.org/wiki/Parsing). The `Parser` produces an Abstract Syntax Tree ([`AST`](https://en.wikipedia.org/wiki/Abstract_syntax_tree)) which is then passed to the Interpreter. The Interpreter then evaluates the `AST` using evalutation rules and produces an output. Here is a simple diagram that illustrates the architecture:
+The [`Lexer`](https://en.wikipedia.org/wiki/Lexical_analysis) produces an array of [`Tokens`](https://bits.netbeans.org/11.1/javadoc/org-netbeans-modules-lexer/index.html?org/netbeans/api/lexer/Token.html) from the [HLL](https://en.wikipedia.org/wiki/High-level_programming_language) source code, which are then passed to the [`Parser`](https://en.wikipedia.org/wiki/Parsing). The `Parser` produces an Abstract Syntax Tree ([`AST`](https://en.wikipedia.org/wiki/Abstract_syntax_tree)) which is then passed to the Interpreter. The Interpreter then evaluates the `AST` using evalutation rules and produces an output. Here is a simple diagram that illustrates the architecture:
 
 ```mermaid
 graph LR;
-  I(Src) --> Lexer;
+  HLL --> Lexer;
   Lexer --> Parser;
-  Parser --> Interpreter;
-  Interpreter --> O(Output);
+  Parser --> AST[AST Evaluation];
+  AST --> O(Output);
 ```
 
 ## Roadmap
 
--   [ ] Lexer Implementation
+-   [x] Lexer Implementation (_Hasn't been thoroughly tested, yet_)
 -   [ ] Error Handling Infrastructure across all modules
 -   [ ] Parser Implementation
 -   [ ] REPL Implementation
+-   [ ] Packaging
 
 ## Lexer
 
@@ -57,32 +58,29 @@ Here are some of the soon-to-be Lexable tokens:
 | ---------- | --------------------- | -------------- | --------------------- |
 | `ASSIGN`   | Assignment operator   | `EOF`          | End of file           |
 | `IDENT`    | Identifier            | `DECLARESTART` | Declare start keyword |
-| `INT`      | Integer               | `DECLAREEND`   | Declare end keyword   |
-| `LET`      | Signal                | `PROGRAMSTART` | Program start keyword |
-| ???        | ???                   | `PROGRAMEND`   | Program end keyword   |
-| ???        | ???                   | `BEGIN`        | Begin keyword         |
-| `AND`      | BitWise and operator  | `END`          | End keyword           |
-| `OR`       | BitWise or operator   | `SEMICOLON`    | Semicolon             |
-| `XOR`      | BitWise xor operator  | `WRITE`        | Write keyword         |
-| `NOT`      | BitWise not operator  | `READ`         | Read keyword          |
-| `NAND`     | BitWise nand operator | `LET`          | Let keyword           |
-| `NOR`      | BitWise nor operator  |
-| `XNOR`     | BitWise xnor operator |
+| ~~`INT`~~  | ~~Integer~~           | `DECLAREEND`   | Declare end keyword   |
+| `SIGN`     | Signal                | `PROGRAMSTART` | Program start keyword |
+| `AND`      | BitWise and operator  | `PROGRAMEND`   | Program end keyword   |
+| `OR`       | BitWise or operator   | `BEGIN`        | Begin keyword         |
+| `XOR`      | BitWise xor operator  | `END`          | End keyword           |
+| `NOT`      | BitWise not operator  | `SEMICOLON`    | Semicolon             |
+| `NAND`     | BitWise nand operator | `WRITE`        | Write keyword         |
+| `NOR`      | BitWise nor operator  | `READ`         | Read keyword          |
+| `XNOR`     | BitWise xnor operator | `LET`          | Let keyword           |
 
 > **Note** These are reserved keywords that cannot be used as identifiers.
 
--   [x] Lex Identifier (i.e. `TK_IDENTIFIER`)
--   [x] Lex Assignment operator (i.e. `OP_ASSIGN`)
--   [x] Lex Signal (i.e. `TK_SIGNAL`)
 -   [x] Lex Semicolon (i.e. `TK_SEMICOL`)
+-   [x] Lex Signal (i.e. `TK_SIGNAL`)
+-   [x] Lex Assignment operator (i.e. `OP_ASSIGN`)
+-   [x] Lex Identifier (i.e. `TK_IDENTIFIER`)
 -   [x] Handle Empty Files
--   [x] Lex Keywords
-    -   [x] Lex Write keyword (i.e. `TK_WRITE`)
-    -   [x] Lex Read keyword (i.e. `TK_READ`)
-    -   [x] Lex Entry Point delimiters (i.e. `TK_BEGIN` and `TK_END`)
-    -   [x] Lex Let keyword (i.e. `TK_LET`)
-    -   [x] Lex Declare delimiters (i.e. `TK_DECLARESTART` and `TK_DECLAREEND`)
-    -   [x] Lex Program delimiters (i.e. `TK_PROGRAMSTART` and `TK_PROGRAMEND`)
+-   [x] Lex Write keyword (i.e. `TK_WRITE`)
+-   [x] Lex Read keyword (i.e. `TK_READ`)
+-   [x] Lex Entry Point delimiters (i.e. `TK_BEGIN` and `TK_END`)
+-   [x] Lex Let keyword (i.e. `TK_LET`)
+-   [x] Lex Declare delimiters (i.e. `TK_DECLARESTART` and `TK_DECLAREEND`)
+-   [x] Lex Program delimiters (i.e. `TK_PROGRAMSTART` and `TK_PROGRAMEND`)
 -   [x] Lex BitWise and operator (i.e. `OP_AND`)
 -   [x] Lex BitWise or operator (i.e. `OP_OR`)
 -   [x] Lex BitWise xor operator (i.e. `OP_XOR`)
