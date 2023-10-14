@@ -4,10 +4,10 @@ type TokenType int
 
 // Token is a struct that holds the type and literal of a token
 type Token struct {
-	Type   TokenType
-	Literal  string
-	Symbol string
-	Pos    Pos
+	Type    TokenType
+	Literal string
+	Symbol  string
+	Pos     Pos
 }
 
 // Pos is a struct that holds the position of a token
@@ -35,7 +35,7 @@ const (
 	TK_END
 	TK_EOF
 	// Operators
-	OP_ASSIGN 
+	OP_ASSIGN
 	OP_AND
 	OP_OR
 	OP_NOT
@@ -64,6 +64,7 @@ var KeywordLiterals = map[TokenType]string{
 
 // Reverse the map
 var Keywords = map[string]TokenType{}
+
 func init() {
 	for k, v := range KeywordLiterals {
 		Keywords[v] = k
@@ -84,9 +85,12 @@ var OperatorsLiterals = map[TokenType]string{
 
 // Reverse the map
 var Operators = map[string]TokenType{}
+
 func init() {
 	for k, v := range OperatorsLiterals {
 		Operators[v] = k
 	}
 }
-	
+
+// Illegal identifier chars
+var IllegalIdentifierChars string = "-!~&|^()"

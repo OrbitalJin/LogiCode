@@ -1,7 +1,7 @@
 !Program;
 
 !Declare;
-  LET a <- 001;
+  LET _a12 <- 001;
   LET b <- 010;
 !EndDeclare;
 

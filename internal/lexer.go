@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"github.com/OrbitalJin/LogiCode/meta"
@@ -36,35 +37,37 @@ func NewLexer(src string) *Lexer {
 func (l *Lexer) Lex() (*[]types.Token, error) {
 	var table []types.Token
 	if l.srcEmpty() {
-		return &table, fmt.Errorf(types.ERR_EMPTY_FILE)
+		return &table, types.Err(types.ERRNO_EMPTY_FILE)
 	}
 
 	for l.pointer < len(l.src) {
 		ch := l.read()
 		// Only try to lex if the current char is not a WhiteSpace
 		if !l.isWhiteSpace(ch) {
-			l.debug(ch); // Debug
+			l.debug(ch) // Debug
 
 			tk, err := l.nextToken()
 			if err != nil {
-				return &table, err
+				return nil, err
 			}
 			l.pos.Col++
 			table = append(table, tk)
-			if meta.DEBUG {fmt.Print(tk, "\n")}// Debug
+			if meta.DEBUG {
+				fmt.Print(tk, "\n")
+			} // Debug
 		} else {
 			l.computeNewPos(ch)
 		}
 		l.pointer++
 	}
-	table = append(table, types.Token{Type: types.TK_EOF, Pos: l.pos})
 	if meta.DEBUG {
 		fmt.Printf("%v Successfully lexed %d tokens\n", l.prefix, len(table)) // Debug
 	}
+	table = append(table, types.Token{Type: types.TK_EOF, Pos: l.pos})
 	return &table, nil
 }
 
-// Return a token of the currently pointed byte
+// Returns a token of the currently pointed byte
 func (l *Lexer) nextToken() (types.Token, error) {
 	var token types.Token
 	var ch byte = l.read()
@@ -76,7 +79,7 @@ func (l *Lexer) nextToken() (types.Token, error) {
 	if l.isAlpha(ch) {
 		switch ch {
 		case ';':
-			token, err = l.readSemiColumn()
+			token, err = l.readSemiColon()
 
 		case '<':
 			token, err = l.readAssignment()
@@ -89,7 +92,7 @@ func (l *Lexer) nextToken() (types.Token, error) {
 }
 
 // Tokenize Semi Column
-func (l *Lexer) readSemiColumn() (types.Token, error) {
+func (l *Lexer) readSemiColon() (types.Token, error) {
 	return types.Token{Type: types.TK_SEMICOL, Literal: ";", Pos: l.pos}, nil
 }
 
@@ -116,10 +119,10 @@ func (l *Lexer) readAssignment() (types.Token, error) {
 	// Check if the next char is a hyphen
 	ch, err := l.peek()
 	if err != nil {
-		return token, fmt.Errorf(types.ERR_EOF)
+		return token, types.Err(types.ERRNO_EOF)
 	}
 	if ch != '-' {
-		return token, l.syntaxError(string(ch), literal, "Illegal operator")
+		return token, l.syntaxError(string(ch), literal, types.Errors[types.ERRNO_ILLEGAL_OP])
 	}
 	token.Type = types.OP_ASSIGN
 	token.Literal = literal
@@ -133,30 +136,34 @@ func (l *Lexer) readTokenType() (types.Token, error) {
 	var str string
 
 	// Loop until the next char doesn't verify the isIdentifier condition
-	for l.pointer < len(l.src) && l.isIdentifier(l.read()){
+	for l.pointer < len(l.src) && l.isIdentifier(l.read()) {
 		str += string(l.read())
 		l.pointer++
 	}
 	l.pointer--
-	
-	// If the string is a keyword, return the keyword token
-	if kw, ok := l.isKeyword(str); ok {
-		token.Type = kw
-		token.Literal = str
-		return token, nil
-	}
 
-	if op, ok := l.isOperator(str); ok {
-		token.Type = op
-		token.Literal = str
-		return token, nil
-	}
-
-	// Otherwise, return an identifier token
-	if str[0] == '!' {return token, l.syntaxError(str, "", "Illegal token in identifier")}
-	token.Type = types.TK_IDENTIFIER
 	token.Literal = str
 
+	// If the string is a keyword, return the corresponding TK_
+	if kw, ok := l.isKeyword(str); ok {
+		token.Type = kw
+		return token, nil
+	}
+
+	// If the strins is an operator, return the corresponding OP_
+	if op, ok := l.isOperator(str); ok {
+		token.Type = op
+		return token, nil
+	}
+
+	// Check if the string contains any illegal identifier char
+	for _, ch := range str {
+		if strings.Contains(types.IllegalIdentifierChars, string(ch)) {
+			return token, l.syntaxError(str, "", types.Errors[types.ERRNO_ILLEGAL_ID])
+		}
+	}
+
+	token.Type = types.TK_IDENTIFIER
 	return token, nil
 }
 
@@ -197,7 +204,7 @@ func (l *Lexer) read() byte {
 // Peek the next byte
 func (l *Lexer) peek() (byte, error) {
 	if l.pointer+1 >= len(l.src) {
-		return 0, fmt.Errorf(types.ERR_EOF)
+		return 0, types.Err(types.ERRNO_EOF)
 	}
 	return l.src[l.pointer+1], nil
 }
@@ -230,7 +237,7 @@ func (l *Lexer) isNumber(ch byte) bool {
 
 // Syntax error handler
 func (l *Lexer) syntaxError(s, suggest, info string) error {
-	var err = "%s Untokenizable literal: %s at (%d, %d)"
+	var err = "%s Untokenizable literal: `%s` at (%d, %d)"
 	if info != "" {
 		err += "\n--> [Err] " + info
 	}
