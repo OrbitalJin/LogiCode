@@ -56,10 +56,11 @@ graph LR;
 -   [ ] Packaging
 
 ## Lexer
-The `Lexer` functions as a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), beginning at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
+The `Lexer` functions is a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), starting at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
 
 ```mermaid
 stateDiagram-v2
+  scanner --> start: char
   start --> number: digit
   number --> number: digit
   number --> start: !digit
@@ -71,7 +72,7 @@ stateDiagram-v2
   start --> operator: otherwise
   operator --> start: !valid
   operator --> operator: valid
-  start --> end: -
+  start --> eof: -
   
 ```
 

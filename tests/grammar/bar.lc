@@ -1,0 +1,13 @@
+!Program;
+
+!Declare;
+  buzz
+!EndDeclare;
+
+!Begin;
+  foo
+  bar
+  baz
+!End;
+
+!EndProgram;  

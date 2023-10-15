@@ -6,6 +6,7 @@ import (
 
 	"github.com/OrbitalJin/LogiCode/internal/parser"
 	e "github.com/OrbitalJin/LogiCode/types/errors"
+	t "github.com/OrbitalJin/LogiCode/types/tokens"
 )
 
 func getSource() string {
@@ -25,14 +26,27 @@ func readSource(path string) string {
 	return string(content)
 }
 
-// args := os.Args[1:] This is for the repl
-func main() {
-	source := getSource()
+func lex(s string) *[]t.Token {
+	l := parser.NewLexer(s)
 
-	l := parser.NewLexer(source)
-
-	_, err := l.Lex()
+	tokens, err := l.Lex()
 	if err != nil {
 		fmt.Println(err)
 	}
+	return tokens
+}
+
+func parse(tks []t.Token) {
+	p := parser.NewParser(tks)
+	_, err := p.Parse()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// args := os.Args[1:] This is for the repl
+func main() {
+	source := getSource()
+	tokens := lex(source)
+	parse(*tokens)
 }
