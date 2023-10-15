@@ -35,21 +35,45 @@ The `Lexer` returns an array of [`Tokens`](https://bits.netbeans.org/11.1/javado
 
 ```mermaid
 graph LR;
-  HLL --> Lexer;
-  Lexer --> Parser;
-  Parser --> AST[AST Evaluation];
+  H(HLL) --> S[Scanner];
+  L --> P[Parser];
+  S --> L[Lexer];
+  L --> LERR[Lexer Error Handler];
+  LERR --> L;
+  P --> PERR[Parser Error Handler];
+  PERR --> P;
+  P --> AST[AST Evaluation];
   AST --> O(Output);
+
 ```
 
 ## Roadmap
 
 -   [x] Lexer Implementation (_Hasn't been thoroughly tested, yet_)
--   [ ] Error Handling Infrastructure across all modules
+-   [X] Error Handling Infrastructure across all modules
 -   [ ] Parser Implementation
 -   [ ] REPL Implementation
 -   [ ] Packaging
 
 ## Lexer
+The `Lexer` functions as a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), beginning at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
+
+```mermaid
+stateDiagram-v2
+  start --> number: digit
+  number --> number: digit
+  number --> start: !digit
+
+  start --> identifier: letter
+  identifier --> identifier: legal
+  identifier --> start: !legal
+
+  start --> operator: otherwise
+  operator --> start: !valid
+  operator --> operator: valid
+  start --> end: -
+  
+```
 
 LogiCode embraces a simple syntax that is easy to learn and use.
 Here are some of the supported Lexable tokens:
@@ -68,12 +92,16 @@ Here are some of the supported Lexable tokens:
 | `NOR`      | BitWise nor operator  | `READ`         | Read keyword          |
 | `XNOR`     | BitWise xnor operator | `LET`          | Let keyword           |
 > **Note** These are reserved keywords that cannot be used as identifiers.
-> Eventually I would like to migrate from the the key-per-key string streaming approach to a buffer scanning approach.
+> Eventually I would like to migrate from the the key-per-key string streaming approach to a buffer scanning approach, utilmately seperating the Lexing and reading logic into two seperate modules.
 
 ## Parser
 
-The `Parser` is a recursive descent parser that produces an `AST` from the `Tokens` that are produced by the `Lexer`.
+The `Parser` is a recursive descent parser that produces an `AST` from the `Tokens` that are produced by the `Lexer`. The language is defined by 3 mains constructs, namely:
++ **Declarations** introduce and define wires with initial signals. (e.g. `LET x <- 001;`)
++ **Expressions** are used for calculations or operations involving wires and signals. (e.g. `x AND y;`)
++ **Statements** perform actions within the program, which can include variable assignments, reading values, or other operations. (e.g. `READ x;` or `x <- a XNOR b;`)
 
+The Parser will need to differentiate and process these constructs accordingly when building the *AST*.
 ## AST
 
 The `AST` is a tree data structure that represents the source code. It is used to evaluate the source code in a recursive manner which

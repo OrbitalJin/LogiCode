@@ -1,4 +1,4 @@
-package tokens
+package types
 
 type TokenType int
 
