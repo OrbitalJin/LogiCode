@@ -1,57 +1,100 @@
 package parser
 
 import (
-	"github.com/OrbitalJin/LogiCode/internal/ast"
-	"github.com/OrbitalJin/LogiCode/types/errors"
-	t "github.com/OrbitalJin/LogiCode/types/tokens"
+	"OrbitalJin/LogiCode/internal/ast"
+	t "OrbitalJin/LogiCode/types/tokens"
+	"fmt"
 )
 
 type Parser struct {
-	Tokens  []t.Token
-	pointer int
+	Tokens []t.Token
+	ptr    int
 }
 
 // Constructor
 func NewParser(tks []t.Token) *Parser {
 	return &Parser{
-		Tokens:  tks,
-		pointer: 0,
+		Tokens: tks,
+		ptr:    0,
 	}
 }
 
-// Parse
-func (p *Parser) Parse() (*ast.ProgramNode, error) {
-	err := p.isValidStructure()
-	return &ast.ProgramNode{}, err
+func (p *Parser) Parse() (*ast.Program, error) {
+	program := ast.NewProgramAST()
+	for p.ptr < len(p.Tokens) {
+		tk := p.currentToken()
+		switch tk.Type {
+		case t.TK_LET:
+			letStatement := p.parseLetStatement()
+			if letStatement != nil {
+				program.Statements = append(program.Statements, letStatement)
+			}
+		}
+		p.ptr++
+	}
+	return program, nil
 }
 
-// Check whether the program structure is valid
-// This loosely enforces the structure of the program allowing other tokens to be present in between
-func (p *Parser) isValidStructure() error {
-	expectedOrder := []t.TokenType{
-		t.TK_PROGRAMSTART,
-		t.TK_DECLARESTART,
-		t.TK_DECLAREEND,
-		t.TK_BEGIN,
-		t.TK_END,
-		t.TK_PROGRAMEEND,
+// Parses Let Statements
+func (p *Parser) parseLetStatement() *ast.LetStatement {
+	letStatement := &ast.LetStatement{
+		Token: p.currentToken(),
 	}
-
-	currentIndex := 0
-
-	for _, token := range p.Tokens {
-		if currentIndex >= len(expectedOrder) {
-			break // We've already found all expected tokens; further tokens are allowed.
-		}
-
-		if token.Type == expectedOrder[currentIndex] {
-			currentIndex++
-		}
+	// Assert that the next token is an identifier
+	if !p.expectPeek(t.TK_IDENTIFIER) {
+		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.KeywordLiterals[t.TK_IDENTIFIER], t.KeywordLiterals[p.peek().Type]))
+		return nil
 	}
-
-	if currentIndex != len(expectedOrder) {
-		return errors.NewErr("The structure is incomplete. Some expected tokens are missing.")
+	letStatement.Name = &ast.Identifier{
+		Token: p.currentToken(),
+		Value: p.currentToken().Literal,
 	}
+	// Assert that the next token is an assignment operator
+	if !p.expectPeek(t.OP_ASSIGN) {
+		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.OperatorsLiterals[t.OP_ASSIGN], t.KeywordLiterals[p.peek().Type]))
+		return nil
+	}
+	// Assert that the next token is a signal
+	if !p.expectPeek(t.TK_SIGNAL) {
+		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.KeywordLiterals[t.TK_SIGNAL], t.KeywordLiterals[p.peek().Type]))
+		return nil
+	}
+	letStatement.Value = &ast.Signal{
+		Token: p.currentToken(),
+		Value: p.currentToken().Literal,
+	}
+	return letStatement
+}
 
-	return nil
+func (p *Parser) currentToken() t.Token {
+	if p.ptr >= len(p.Tokens) {
+
+	}
+	return p.Tokens[p.ptr]
+}
+
+func (p *Parser) nextToken() t.Token {
+	if p.ptr >= len(p.Tokens) {
+		return t.Token{}
+	}
+	p.ptr++
+	return p.Tokens[p.ptr]
+}
+
+func (p *Parser) peek() t.Token {
+	if p.ptr >= len(p.Tokens) {
+		return t.Token{}
+	}
+	return p.Tokens[p.ptr+1]
+}
+
+func (p *Parser) expectPeek(t t.TokenType) bool {
+	if p.ptr >= len(p.Tokens) {
+		return false
+	}
+	if p.Tokens[p.ptr+1].Type == t {
+		p.ptr++
+		return true
+	}
+	return false
 }

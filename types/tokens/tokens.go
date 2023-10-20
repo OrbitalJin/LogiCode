@@ -1,4 +1,4 @@
-package types
+package tokens
 
 type TokenType int
 
@@ -33,6 +33,7 @@ const (
 	TK_BEGIN
 	TK_END
 	TK_EOF
+	TK_UNKNOWN
 	// Operators
 	OP_ASSIGN
 	OP_AND

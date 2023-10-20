@@ -56,7 +56,7 @@ graph LR;
 -   [ ] Packaging
 
 ## Lexer
-The `Lexer` functions is a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), starting at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
+The `Lexer` functions as a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), starting at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
 
 ```mermaid
 stateDiagram-v2
@@ -76,8 +76,7 @@ stateDiagram-v2
   
 ```
 
-LogiCode embraces a simple syntax that is easy to learn and use.
-Here are some of the supported Lexable tokens:
+Here is a table of the supported Lexable tokens:
 
 | Token Type | Description           | Token Type     | Description           |
 | ---------- | --------------------- | -------------- | --------------------- |
@@ -103,6 +102,12 @@ The `Parser` is a recursive descent parser that produces an `AST` from the `Toke
 + **Statements** perform actions within the program, which can include variable assignments, reading values, or other operations. (e.g. `READ x;` or `x <- a XNOR b;`)
 
 The Parser will need to differentiate and process these constructs accordingly when building the *AST*.
+
+- [X] Declaration Statements (LET Statements)
+- [ ] Expression Statements
+  - [ ] READ Statements
+  - [ ] WRITE Statements
+
 ## AST
 
 The `AST` is a tree data structure that represents the source code. It is used to evaluate the source code in a recursive manner which
@@ -127,10 +132,15 @@ Expression: `a & b | c`
 
 ```mermaid
 graph TD;
-    F1[&] --> T1[a];
-    F1 --> F2["|"];
-    F2 --> T2[b];
-    F2 --> T3[c];
+    F1["|"] --> T1[c];
+    F1 --> F2[&];
+    F2 --> T2[a];
+    F2 --> T3[b];
 ```
 
 > **Warning** The `AST` is not a binary tree. It is a tree data structure that can have any number of children.
+
+
+## References
+- [Writing An Interpreter In Go](https://interpreterbook.com/)
+- [Crafting Interpreters](https://craftinginterpreters.com/)

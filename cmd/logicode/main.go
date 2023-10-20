@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/OrbitalJin/LogiCode/internal/parser"
-	e "github.com/OrbitalJin/LogiCode/types/errors"
-	t "github.com/OrbitalJin/LogiCode/types/tokens"
+	"OrbitalJin/LogiCode/internal/parser"
+	e "OrbitalJin/LogiCode/types/errors"
+	t "OrbitalJin/LogiCode/types/tokens"
 )
 
 func getSource() string {

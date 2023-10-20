@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/OrbitalJin/LogiCode/meta"
-	t "github.com/OrbitalJin/LogiCode/types/tokens"
+	"OrbitalJin/LogiCode/meta"
+	t "OrbitalJin/LogiCode/types/tokens"
 )
 
 const (
