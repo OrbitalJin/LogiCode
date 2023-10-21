@@ -32,8 +32,8 @@ var Errors = map[int]string{
 	ERRNO_ILLEGAL_TK:            meta.LEXER_PREFIX + " Illegal token",
 	ERRNO_VOID_TOKENS:           meta.PARSER_PREFIX + " No tokens to parse",
 	ERRNO_INVALID_PROGRAM:       meta.PARSER_PREFIX + " Invalid program",
-	ERRNO_INVALID_PROGRAM_START: meta.PARSER_PREFIX + " Expected " + t.KeywordLiterals[t.TK_PROGRAMSTART] + " keyword",
-	ERRNO_INVALID_PROGRAM_END:   meta.PARSER_PREFIX + " Expected " + t.KeywordLiterals[t.TK_PROGRAMEEND] + " keyword",
+	ERRNO_INVALID_PROGRAM_START: meta.PARSER_PREFIX + " Expected " + t.LiteralsMap[t.TK_PROGRAMSTART] + " keyword",
+	ERRNO_INVALID_PROGRAM_END:   meta.PARSER_PREFIX + " Expected " + t.LiteralsMap[t.TK_PROGRAMEEND] + " keyword",
 }
 
 func Err(code int) error {

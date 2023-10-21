@@ -8,6 +8,7 @@ import (
 
 type Parser struct {
 	Tokens []t.Token
+	errors []string
 	ptr    int
 }
 
@@ -15,72 +16,111 @@ type Parser struct {
 func NewParser(tks []t.Token) *Parser {
 	return &Parser{
 		Tokens: tks,
+		errors: []string{},
 		ptr:    0,
 	}
 }
 
+// Parse the tokens
 func (p *Parser) Parse() (*ast.Program, error) {
 	program := ast.NewProgramAST()
+	program.Statements = []ast.Statement{}
 	for p.ptr < len(p.Tokens) {
-		tk := p.currentToken()
-		switch tk.Type {
-		case t.TK_LET:
-			letStatement := p.parseLetStatement()
-			if letStatement != nil {
-				program.Statements = append(program.Statements, letStatement)
-			}
+		stmt := p.parseStatement()
+		if stmt != nil {
+			program.Statements = append(program.Statements, stmt)
 		}
-		p.ptr++
+		p.advance()
 	}
 	return program, nil
 }
 
+// Parse Statements
+func (p *Parser) parseStatement() ast.Statement {
+	tk := p.currentToken()
+	switch tk.Type {
+	case t.TK_LET  : return p.parseLetStatement()
+	case t.TK_WRITE: return p.parseWriteStatement()
+	case t.TK_READ : return p.parseReadStatement()
+	default: return nil
+	}
+}
+
 // Parses Let Statements
 func (p *Parser) parseLetStatement() *ast.LetStatement {
-	letStatement := &ast.LetStatement{
+	stmnt := &ast.LetStatement{
 		Token: p.currentToken(),
 	}
 	// Assert that the next token is an identifier
 	if !p.expectPeek(t.TK_IDENTIFIER) {
-		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.KeywordLiterals[t.TK_IDENTIFIER], t.KeywordLiterals[p.peek().Type]))
+		p.peekError(t.TK_IDENTIFIER)
 		return nil
 	}
-	letStatement.Name = &ast.Identifier{
+	stmnt.Name = &ast.Identifier{
 		Token: p.currentToken(),
 		Value: p.currentToken().Literal,
 	}
 	// Assert that the next token is an assignment operator
 	if !p.expectPeek(t.OP_ASSIGN) {
-		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.OperatorsLiterals[t.OP_ASSIGN], t.KeywordLiterals[p.peek().Type]))
+		p.peekError(t.OP_ASSIGN)
 		return nil
 	}
 	// Assert that the next token is a signal
 	if !p.expectPeek(t.TK_SIGNAL) {
-		fmt.Println(fmt.Sprintf("Expected %s, got %s", t.KeywordLiterals[t.TK_SIGNAL], t.KeywordLiterals[p.peek().Type]))
+		p.peekError(t.TK_SIGNAL)
 		return nil
 	}
-	letStatement.Value = &ast.Signal{
+	stmnt.Value = &ast.Signal{
 		Token: p.currentToken(),
 		Value: p.currentToken().Literal,
 	}
-	return letStatement
+	return stmnt
 }
 
-func (p *Parser) currentToken() t.Token {
-	if p.ptr >= len(p.Tokens) {
-
+// Parses Write Statements
+func (p *Parser) parseWriteStatement() *ast.WriteStatement {
+	stmt := &ast.WriteStatement{
+		Token: p.currentToken(),
 	}
-	return p.Tokens[p.ptr]
+	// Assert that the next token is an IDENTIFIER
+	if !p.expectPeek(t.TK_IDENTIFIER) {
+		p.peekError(t.TK_IDENTIFIER)
+		return nil
+	}
+	stmt.Name = &ast.Identifier{
+		Value: p.currentToken().Literal,
+	}
+	return stmt
 }
 
-func (p *Parser) nextToken() t.Token {
-	if p.ptr >= len(p.Tokens) {
-		return t.Token{}
+// Parses Write Statements
+func (p *Parser) parseReadStatement() *ast.ReadStatement {
+	stmt := &ast.ReadStatement{
+		Token: p.currentToken(),
 	}
+	// Assert that the next token is an IDENTIFIER
+	if !p.expectPeek(t.TK_IDENTIFIER) {
+		p.peekError(t.TK_IDENTIFIER)
+		return nil
+	}
+	stmt.Name = &ast.Identifier{
+		Value: p.currentToken().Literal,
+	}
+	return stmt
+}
+
+// Advance to the next token
+func (p *Parser) advance() bool {
 	p.ptr++
+	return true
+}
+
+// Return Current Token
+func (p *Parser) currentToken() t.Token {
 	return p.Tokens[p.ptr]
 }
 
+// Return Next Token
 func (p *Parser) peek() t.Token {
 	if p.ptr >= len(p.Tokens) {
 		return t.Token{}
@@ -88,13 +128,23 @@ func (p *Parser) peek() t.Token {
 	return p.Tokens[p.ptr+1]
 }
 
-func (p *Parser) expectPeek(t t.TokenType) bool {
+// Assert that the next token is of type t
+func (p *Parser) expectPeek(tkt t.TokenType) bool {
 	if p.ptr >= len(p.Tokens) {
 		return false
 	}
-	if p.Tokens[p.ptr+1].Type == t {
-		p.ptr++
-		return true
+	if p.Tokens[p.ptr+1].Type == tkt {
+		return p.advance()
 	}
 	return false
+}
+
+func (p *Parser) peekError(tkt t.TokenType) {
+	msg := fmt.Sprintf("Expected next token to be %s, got %s instead at line %d", t.LiteralsMap[tkt], t.LiteralsMap[p.peek().Type], p.peek().Pos.Row)
+	p.errors = append(p.errors, msg)
+}
+
+// Return Errors
+func (p *Parser) Errors() []string {
+	return p.errors
 }

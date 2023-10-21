@@ -1,6 +1,6 @@
 # LogiCode
 
-LogiCode is a scripting language that is designed to be used for [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra) and [logic circuit](https://en.wikipedia.org/?title=Logic_circuit&redirect=no) design. It is a simple language that is easy to learn and use. The compiler is written in [Go](https://en.wikipedia.org/wiki/Go_(programming_language)) which implements a hand-crafted [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) and [parser](https://en.wikipedia.org/wiki/Parsing).
+LogiCode is a scripting language that is designed to be used for [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra) and [logic circuit](https://en.wikipedia.org/?title=Logic_circuit&redirect=no) design. It is a simple language that is easy to learn and use. The compiler is written in [Go](<https://en.wikipedia.org/wiki/Go_(programming_language)>) which implements a hand-crafted [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) and [parser](https://en.wikipedia.org/wiki/Parsing).
 
 ## Grammar
 
@@ -50,13 +50,14 @@ graph LR;
 ## Roadmap
 
 -   [x] Lexer Implementation (_Hasn't been thoroughly tested, yet_)
--   [X] Error Handling Infrastructure across all modules
+-   [x] Error Handling Infrastructure across all modules
 -   [ ] Parser Implementation
 -   [ ] REPL Implementation
 -   [ ] Packaging
 
 ## Lexer
-The `Lexer` functions as a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (*or FSM for short*), starting at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
+
+The `Lexer` functions as a [finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) (_or FSM for short_), starting at an initial state and transitioning/branching out to different states based on the initial character it encounters. It generates tokens in a state-dependent manner, with each state having its own token production logic.
 
 ```mermaid
 stateDiagram-v2
@@ -73,7 +74,7 @@ stateDiagram-v2
   operator --> start: !valid
   operator --> operator: valid
   start --> eof: -
-  
+
 ```
 
 Here is a table of the supported Lexable tokens:
@@ -91,22 +92,24 @@ Here is a table of the supported Lexable tokens:
 | `NAND`     | BitWise nand operator | `WRITE`        | Write keyword         |
 | `NOR`      | BitWise nor operator  | `READ`         | Read keyword          |
 | `XNOR`     | BitWise xnor operator | `LET`          | Let keyword           |
+
 > **Note** These are reserved keywords that cannot be used as identifiers.
 > Eventually I would like to migrate from the the key-per-key string streaming approach to a buffer scanning approach, utilmately seperating the Lexing and reading logic into two seperate modules.
 
 ## Parser
 
 The `Parser` is a recursive descent parser that produces an `AST` from the `Tokens` that are produced by the `Lexer`. The language is defined by 3 mains constructs, namely:
-+ **Declarations** introduce and define wires with initial signals. (e.g. `LET x <- 001;`)
-+ **Expressions** are used for calculations or operations involving wires and signals. (e.g. `x AND y;`)
-+ **Statements** perform actions within the program, which can include variable assignments, reading values, or other operations. (e.g. `READ x;` or `x <- a XNOR b;`)
 
-The Parser will need to differentiate and process these constructs accordingly when building the *AST*.
+-   **Declarations** introduce and define wires with initial signals. (e.g. `LET x <- 001;`)
+-   **Expressions** are used for calculations or operations involving wires and signals. (e.g. `x AND y;`)
+-   **Statements** perform actions within the program, which can include variable assignments, reading values, or other operations. (e.g. `READ x;` or `x <- a XNOR b;`)
 
-- [X] Declaration Statements (LET Statements)
-- [ ] Expression Statements
-  - [ ] READ Statements
-  - [ ] WRITE Statements
+The Parser will need to differentiate and process these constructs accordingly when building the _AST_.
+
+-   [x] Declaration Statements (LET Statements)
+-   [ ] Expression Statements
+    -   [x] READ Statements
+    -   [x] WRITE Statements
 
 ## AST
 
@@ -140,7 +143,7 @@ graph TD;
 
 > **Warning** The `AST` is not a binary tree. It is a tree data structure that can have any number of children.
 
-
 ## References
-- [Writing An Interpreter In Go](https://interpreterbook.com/)
-- [Crafting Interpreters](https://craftinginterpreters.com/)
+
+-   [Writing An Interpreter In Go](https://interpreterbook.com/)
+-   [Crafting Interpreters](https://craftinginterpreters.com/)

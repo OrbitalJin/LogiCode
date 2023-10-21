@@ -115,7 +115,7 @@ func (l *Lexer) readSignal() t.Token {
 // Tokenize Assignment operator
 func (l *Lexer) readAssignment() (t.Token, error) {
 	token := t.Token{Pos: l.pos}
-	literal := t.OperatorsLiterals[t.OP_ASSIGN]
+	literal := t.LiteralsMap[t.OP_ASSIGN]
 
 	// Check if the next char is a hyphen
 	ch, err := l.peek()
@@ -173,16 +173,16 @@ func (l *Lexer) readTokenType() (t.Token, error) {
 
 // Checks wether a string is a keyword (e.g. !Program, LET)
 func (l *Lexer) isKeyword(str string) (t.TokenType, bool) {
-	if _, found := t.Keywords[str]; found {
-		return t.Keywords[str], true
+	if _, found := t.Literals[str]; found {
+		return t.Literals[str], true
 	}
 	return -1, false
 }
 
 // Checks wether a string is a  BitWise Operators (e.g &, |, ~)
 func (l *Lexer) isOperator(s string) (t.TokenType, bool) {
-	if _, found := t.Operators[s]; found {
-		return t.Operators[s], true
+	if _, found := t.Literals[s]; found {
+		return t.Literals[s], true
 	}
 	return -1, false
 }

@@ -42,6 +42,9 @@ func parse(tks []t.Token) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	for _, err := range p.Errors() {
+		fmt.Println(err)
+	}
 }
 
 // args := os.Args[1:] This is for the repl

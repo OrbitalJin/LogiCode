@@ -46,7 +46,7 @@ const (
 )
 
 // KeywordLiterals is a map of TokenType to their string literal
-var KeywordLiterals = map[TokenType]string{
+var LiteralsMap = map[TokenType]string{
 	TK_SEMICOL:      ";",
 	TK_SIGNAL:       "SIGNAL",
 	TK_IDENTIFIER:   "IDENT",
@@ -60,37 +60,23 @@ var KeywordLiterals = map[TokenType]string{
 	TK_BEGIN:        "!Begin",
 	TK_END:          "!End",
 	TK_EOF:          "EOF",
+	OP_ASSIGN:       "<-",
+	OP_AND:          "AND",
+	OP_NAND:         "NAND",
+	OP_OR:           "OR",
+	OP_NOR:          "NOR",
+	OP_XOR:          "XOR",
+	OP_XNOR:         "XNOR",
+	OP_NOT:          "NOT",
 }
 
 // Reverse the map
-var Keywords = map[string]TokenType{}
+var Literals = map[string]TokenType{}
 
 func init() {
-	for k, v := range KeywordLiterals {
-		Keywords[v] = k
+	for k, v := range LiteralsMap {
+		Literals[v] = k
 	}
 }
-
-// OperatorsLiterals is a map of TokenType to their string literal
-var OperatorsLiterals = map[TokenType]string{
-	OP_ASSIGN: "<-",
-	OP_AND:    "AND",
-	OP_NAND:   "NAND",
-	OP_OR:     "OR",
-	OP_NOR:    "NOR",
-	OP_XOR:    "XOR",
-	OP_XNOR:   "XNOR",
-	OP_NOT:    "NOT",
-}
-
-// Reverse the map
-var Operators = map[string]TokenType{}
-
-func init() {
-	for k, v := range OperatorsLiterals {
-		Operators[v] = k
-	}
-}
-
 // Illegal identifier chars
 var IllegalIdentifierChars string = "-!~&|^()"
