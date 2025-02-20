@@ -1,3 +1,4 @@
 LET x <- 120;
+LET x <- b;
 WRITE x;
 READ x;

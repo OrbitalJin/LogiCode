@@ -1,7 +1,7 @@
 package meta
 
 const (
-	DEBUG           bool   = true
+	DEBUG           bool   = false
 	LANG_NAME       string = "LogiCode"
 	COMPILER_NAME   string = "LGCC"
 	COMPILER_PREFIX string = "[" + COMPILER_NAME + "]"

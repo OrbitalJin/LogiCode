@@ -78,5 +78,11 @@ func init() {
 		Literals[v] = k
 	}
 }
+
 // Illegal identifier chars
 var IllegalIdentifierChars string = "-!~&|^()"
+
+// Is operator
+func (t TokenType) IsOperator() bool {
+	return t >= OP_ASSIGN && t <= OP_XNOR
+}
